@@ -30,7 +30,7 @@ function UncheckRed (cell) {
 
 function CheckGreen (x,y,type,color) {
 
-    if (type == 'pawn')
+    if (type == 'pawn') {
         if (color == 'white') {
             var goalCell = $('[x='+ (parseInt(x)-1) +'][y='+ y +']'); //целевая ячейка белой пешки
             if (IsEmpty(goalCell)) {
@@ -41,9 +41,9 @@ function CheckGreen (x,y,type,color) {
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
             }
-
-
-    } else if (type == 'knight') {
+        }
+    }
+    else if (type == 'knight') {
         //выше коня
         var goalCell1 = $('[x='+ (parseInt(x)-2) +'][y='+ (parseInt(y) +1) +']');
         var goalCell2 = $('[x='+ (parseInt(x)-2) +'][y='+ (parseInt(y) -1) +']');
@@ -81,43 +81,76 @@ function CheckGreen (x,y,type,color) {
             goalCell8.toggleClass('navigate');
         }
 
-    } else if (type == 'rook') {
+    }
+    else if (type == 'rook') {
         //подсветка предлагаемых ячеек ниже фигуры
         for (var i = x; i < 9; i++) {
             var goalCell = $('[x='+ (parseInt(i)+1) +'][y='+ (parseInt(y)) +']');
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
-            } else {
-                break;
-            }
+            } else break;
+
         }
         //выше фигуры
         for (var i = x; i > 0; i--) {
             var goalCell = $('[x='+ (parseInt(i)-1) +'][y='+ (parseInt(y)) +']');
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
-            } else {
-                break;
-            }
+            } else break;
+
         }
         for (var j = y; j < 9; j++) {
             var goalCell = $('[x=' + parseInt(x) + '][y=' + (parseInt(j)+1) +']');
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
-            } else {
-                break;
-            }
+            } else break;
         }
+
         for (var j = y; j > 0; j--) {
             var goalCell = $('[x=' + parseInt(x) + '][y=' + (parseInt(j)-1) +']');
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
-            } else {
-                break;
+            } else break;
+        }
+    }
+    else {
+        if (type == 'bitshop') {
+            //goalCell 1-4 - это четыре разных направления возможного движения слона
+            //не придумал, как можно реализовать одним циклом, поэтому 4
+
+            //юго-восток
+            for (var i = 1; i < 9; i++) {
+                goalCell1 = $('[x=' + (parseInt(x) + i) + '][y=' + (parseInt(y) + i) + ']');
+                if (IsEmpty(goalCell1)) {
+                    goalCell1.toggleClass('navigate');
+                } else break;
+            }
+
+            //юго-запад
+            for (var i = 1; i < 9; i++) {
+                goalCell2 = $('[x=' + (parseInt(x) + i) + '][y=' + (parseInt(y) - i) + ']');
+                if (IsEmpty(goalCell2)) {
+                    goalCell2.toggleClass('navigate');
+                } else break;
+            }
+
+            //с-в
+            for (var i = 1; i < 9; i++) {
+                goalCell3 = $('[x=' + (parseInt(x) - i) + '][y=' + (parseInt(y) + i) + ']');
+                if (IsEmpty(goalCell3)) {
+                    goalCell3.toggleClass('navigate');
+                } else break;
+            }
+
+            //с-з
+            for (var i = 1; i < 9; i++) {
+                goalCell4 = $('[x=' + (parseInt(x) - i) + '][y=' + (parseInt(y) - i) + ']');
+                if (IsEmpty(goalCell4)) {
+                    goalCell4.toggleClass('navigate');
+                } else break;
             }
         }
     }
-
 
 
 
@@ -161,8 +194,8 @@ function Dotting () {
     var blackKnight = '<img color="black" type="knight" src="' + pathToDark + ' N.ico">';
     var whiteKnight = '<img color="white" type="knight" src="' + pathToLight + ' N.ico">';
     //слоны
-    var blackBitshop = '<img color="black" type="bithsop" src="' + pathToDark + ' B.ico">';
-    var whiteBitshop = '<img color="white" type="bithsop" src="' + pathToLight + ' B.ico">';
+    var blackBitshop = '<img color="black" type="bitshop" src="' + pathToDark + ' B.ico">';
+    var whiteBitshop = '<img color="white" type="bitshop" src="' + pathToLight + ' B.ico">';
     //ферзи
     var blackQueen = '<img color="black" type="queen" src="' + pathToDark + ' Q.ico">';
     var whiteQueen = '<img color="white" type="queen" src="' + pathToLight + ' Q.ico">';
