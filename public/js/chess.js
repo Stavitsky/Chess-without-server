@@ -192,13 +192,20 @@ $(document).ready(function () {
         if (!checked && !IsEmpty(this)) {
 
             clFigure = $(this).children()[0]; //запоминаем фигуру
-            clFigureColor = $(clFigure).attr('color')
+            var clFigureColor = $(clFigure).attr('color');
+            var clFigureType = $(clFigure).attr('type');
+            var clFigureX = $(clFigure).parent().attr('x');
+            var clFigureY = $(clFigure).parent().attr('y');
 
             console.log(clFigure);
 
             if (whiteMove && clFigureColor == 'white') {
                 Check(this); //выделяем ячейку
+                    if (clFigureType == 'pawn') {
+                        $('[x='+ (clFigureX-1) +'][y='+ clFigureY +']').toggleClass('navigate');
+                    }
                 checked = true;
+
             } else if (whiteMove && clFigureColor != 'white') {
                 alert ('Error! It\'s white turn!');
             }
@@ -217,6 +224,8 @@ $(document).ready(function () {
             Uncheck($(clFigure).parent()); //снимаем выделение
 
             newMove(clFigure, this);
+
+            $('.navigate').toggleClass('navigate');
 
             checked = false;
 
