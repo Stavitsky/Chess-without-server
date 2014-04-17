@@ -23,9 +23,16 @@
 }
 
 .checked {
-	border: 2px solid red;
+	border: 2px solid orangered;
 }
 
 .navigate {
+    /*border: 2px solid palegreen;*/
+    background-color: lightgreen;
     border: 2px solid green;
+}
+
+.attack {
+    background-color: red;
+    border: 2px solid darkred;
 }

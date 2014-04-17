@@ -26,6 +26,7 @@ function CheckRed (cell) {
 
 function UncheckRed (cell) {
     $(cell).removeClass('checked');
+    $('.attack').toggleClass('attack');
 }
 
 function CheckGreen (x,y,type,color) {
@@ -33,17 +34,41 @@ function CheckGreen (x,y,type,color) {
     if (type == 'pawn') {
         if (color == 'white') {
             var goalCell = $('[x='+ (parseInt(x)-1) +'][y='+ y +']'); //целевая ячейка белой пешки
+            var attackCell1 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y)+1) +']'); //правая под атакой белой
+            var attackCell2 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y)-1) +']'); //левая под атакой белой
+
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
             }
-        } else {
+            //если в ячейке по диагонали есть фигура и она противоположного цвета
+            if (!IsEmpty(attackCell1) && $(attackCell1).children().attr('color') != color) {
+                attackCell1.toggleClass('attack')
+            }
+            if (!IsEmpty(attackCell2) && $(attackCell1).children().attr('color') != color) {
+                attackCell2.toggleClass('attack')
+            }
+
+
+        } else if (color == 'black') {
             var goalCell = $('[x='+ (parseInt(x)+1) +'][y='+ y +']'); //целевая ячейка черной пешки
+            var attackCell1 = $('[x='+ (parseInt(x)+1) +'][y='+ (parseInt(y)+1) +']'); //правая под атакой черной
+            var attackCell2 = $('[x='+ (parseInt(x)+1) +'][y='+ (parseInt(y)-1) +']'); //левая под атакой черной
+
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
+            }
+            //если в ячейке по диагонали есть фигура и она противоположного цвета
+            if (!IsEmpty(attackCell1) && $(attackCell1).children().attr('color') != color) {
+                attackCell1.toggleClass('attack')
+            }
+            if (!IsEmpty(attackCell2) && $(attackCell1).children().attr('color') != color) {
+                attackCell2.toggleClass('attack')
             }
         }
     }
     else if (type == 'knight') {
+        //goalCell1-8 - возможные варианты хода коня
+
         //выше коня
         var goalCell1 = $('[x='+ (parseInt(x)-2) +'][y='+ (parseInt(y) +1) +']');
         var goalCell2 = $('[x='+ (parseInt(x)-2) +'][y='+ (parseInt(y) -1) +']');
@@ -58,27 +83,51 @@ function CheckGreen (x,y,type,color) {
         //если целевая ячейка пустая - подсвечиваем её зеленым
         if (IsEmpty(goalCell1)) {
             goalCell1.toggleClass('navigate');
+        } else {
+            goalCell1.toggleClass('attack');
         }
+
         if (IsEmpty(goalCell2)) {
             goalCell2.toggleClass('navigate');
+
+        } else {
+            goalCell2.toggleClass('attack');
         }
+
         if (IsEmpty(goalCell3)) {
             goalCell3.toggleClass('navigate');
+        } else {
+            goalCell3.toggleClass('attack');
         }
+
         if (IsEmpty(goalCell4)) {
             goalCell4.toggleClass('navigate');
+        } else {
+            goalCell4.toggleClass('attack');
         }
+
         if (IsEmpty(goalCell5)) {
             goalCell5.toggleClass('navigate');
+        } else {
+            goalCell5.toggleClass('attack');
         }
+
         if (IsEmpty(goalCell6)) {
             goalCell6.toggleClass('navigate');
+        } else {
+            goalCell6.toggleClass('attack');
         }
+
         if (IsEmpty(goalCell7)) {
             goalCell7.toggleClass('navigate');
+        } else {
+            goalCell7.toggleClass('attack');
         }
+
         if (IsEmpty(goalCell8)) {
             goalCell8.toggleClass('navigate');
+        } else {
+            goalCell8.toggleClass('attack');
         }
 
     }
