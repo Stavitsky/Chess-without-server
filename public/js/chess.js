@@ -71,6 +71,7 @@ function CheckGreen (x,y,type,color) {
 
         //выше коня
         var goalCell1 = $('[x='+ (parseInt(x)-2) +'][y='+ (parseInt(y) +1) +']');
+        //var goalCell1 = $('[x='+ (x-2) +'][y='+ (y +1) +']');
         var goalCell2 = $('[x='+ (parseInt(x)-2) +'][y='+ (parseInt(y) -1) +']');
         var goalCell3 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y) -2) +']');
         var goalCell4 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y) +2) +']');
@@ -84,50 +85,67 @@ function CheckGreen (x,y,type,color) {
         if (IsEmpty(goalCell1)) {
             goalCell1.toggleClass('navigate');
         } else {
-            goalCell1.toggleClass('attack');
+            //если фигура, которая там стоит - чужая, подсветить атакой
+            if ($(goalCell1).children().attr('color') != color) {
+                goalCell1.toggleClass('attack');
+            }
         }
 
         if (IsEmpty(goalCell2)) {
             goalCell2.toggleClass('navigate');
 
         } else {
-            goalCell2.toggleClass('attack');
+            if ($(goalCell2).children().attr('color') != color) {
+                goalCell2.toggleClass('attack');
+            }
         }
 
         if (IsEmpty(goalCell3)) {
             goalCell3.toggleClass('navigate');
         } else {
-            goalCell3.toggleClass('attack');
+            if ($(goalCell3).children().attr('color') != color) {
+                goalCell3.toggleClass('attack');
+            }
         }
 
         if (IsEmpty(goalCell4)) {
             goalCell4.toggleClass('navigate');
         } else {
-            goalCell4.toggleClass('attack');
+            if ($(goalCell4).children().attr('color') != color) {
+                goalCell4.toggleClass('attack');
+            }
         }
 
         if (IsEmpty(goalCell5)) {
             goalCell5.toggleClass('navigate');
         } else {
-            goalCell5.toggleClass('attack');
+            if ($(goalCell5).children().attr('color') != color) {
+                goalCell5.toggleClass('attack');
+            }
         }
 
         if (IsEmpty(goalCell6)) {
             goalCell6.toggleClass('navigate');
         } else {
-            goalCell6.toggleClass('attack');
+            if ($(goalCell6).children().attr('color') != color) {
+                goalCell6.toggleClass('attack');
+            }
         }
 
         if (IsEmpty(goalCell7)) {
             goalCell7.toggleClass('navigate');
         } else {
-            goalCell7.toggleClass('attack');
+            if ($(goalCell7).children().attr('color') != color) {
+                goalCell7.toggleClass('attack');
+            }
         }
 
         if (IsEmpty(goalCell8)) {
             goalCell8.toggleClass('navigate');
         } else {
-            goalCell8.toggleClass('attack');
+            if ($(goalCell8).children().attr('color') != color) {
+                goalCell8.toggleClass('attack');
+            }
         }
 
     }
