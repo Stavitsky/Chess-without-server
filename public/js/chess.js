@@ -44,7 +44,7 @@ function Navigate (x,y,type,color) {
             if (!IsEmpty(attackCell1) && $(attackCell1).children().attr('color') != color) {
                 attackCell1.toggleClass('attack')
             }
-            if (!IsEmpty(attackCell2) && $(attackCell1).children().attr('color') != color) {
+            if (!IsEmpty(attackCell2) && $(attackCell2).children().attr('color') != color) {
                 attackCell2.toggleClass('attack')
             }
 
@@ -260,7 +260,81 @@ function Navigate (x,y,type,color) {
         //ДОПИЛИТЬ КАК ROOK+BITSHOP
     }
     else if (type == 'king') {
-        //доделать
+        //все возможные шаги вокруг короля
+        var goalCell1 = $('[x='+ (parseInt(x) +1) +'][y='+ (parseInt(y) +1) +']');
+        var goalCell2 = $('[x='+ (parseInt(x) +1) +'][y='+ (parseInt(y)) +']');
+        var goalCell3 = $('[x='+ (parseInt(x) +1) +'][y='+ (parseInt(y) -1) +']');
+        var goalCell4 = $('[x='+ (parseInt(x)) +'][y='+ (parseInt(y) -1) +']');
+        var goalCell5 = $('[x='+ (parseInt(x) -1) +'][y='+ (parseInt(y) -1) +']');
+        var goalCell6 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y)) +']');
+        var goalCell7 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y) +1) +']');
+        var goalCell8 = $('[x='+ (parseInt(x)) +'][y='+ (parseInt(y) +1) +']');
+
+        if (IsEmpty(goalCell1)) {
+            goalCell1.toggleClass('navigate');
+        } else  {
+            if ($(goalCell1).children().attr('color') != color) {
+                goalCell1.toggleClass('attack');
+            }
+        }
+
+        if (IsEmpty(goalCell2)) {
+            goalCell2.toggleClass('navigate');
+        } else  {
+            if ($(goalCell2).children().attr('color') != color) {
+                goalCell2.toggleClass('attack');
+            }
+        }
+
+        if (IsEmpty(goalCell3)) {
+            goalCell3.toggleClass('navigate');
+        } else  {
+            if ($(goalCell3).children().attr('color') != color) {
+                goalCell3.toggleClass('attack');
+            }
+        }
+
+        if (IsEmpty(goalCell4)) {
+            goalCell4.toggleClass('navigate');
+        } else  {
+            if ($(goalCell4).children().attr('color') != color) {
+                goalCell4.toggleClass('attack');
+            }
+        }
+
+        if (IsEmpty(goalCell5)) {
+            goalCell5.toggleClass('navigate');
+        } else  {
+            if ($(goalCell5).children().attr('color') != color) {
+                goalCell5.toggleClass('attack');
+            }
+        }
+
+        if (IsEmpty(goalCell6)) {
+            goalCell6.toggleClass('navigate');
+        } else  {
+            if ($(goalCell6).children().attr('color') != color) {
+                goalCell6.toggleClass('attack');
+            }
+        }
+
+        if (IsEmpty(goalCell7)) {
+            goalCell7.toggleClass('navigate');
+        } else  {
+            if ($(goalCell7).children().attr('color') != color) {
+                goalCell7.toggleClass('attack');
+            }
+        }
+
+        if (IsEmpty(goalCell8)) {
+            goalCell8.toggleClass('navigate');
+        } else  {
+            if ($(goalCell8).children().attr('color') != color) {
+                goalCell8.toggleClass('attack');
+            }
+        }
+
+
     }
 
 
@@ -375,8 +449,14 @@ function IsEmpty (cell) {
 
 
 function Move (figure, where) {
+    if ($(where).hasClass('navigate')) {
+        $(where).append(figure);
+    } else {
+        //дыра в том, что в случае, если срабатывает else
+        //мы выходим из функции и теряем ход - допилить
+        alert ('Can\'t move here!');
+    }
 
-    $(where).append(figure);
 };
 
 
@@ -432,30 +512,14 @@ $(document).ready(function () {
         } else if (checked && IsEmpty(this)) {
 
             UncheckRed($(clFigure).parent()); //снимаем выделение
-
             Move(clFigure, this);
-
             $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
-
             checked = false; //снимаем флаг выбранной фигуры
-
             whiteMove = ToggleTurn(whiteMove); //переход хода
 
 
         } else if (checked && !IsEmpty(this)) {
             console.log ('Not empty!');
         }
-
-
-
-        //whiteMove = false;
-
-
 	});
-
-
-
-
-    //alert('After functions!');
-
 });
