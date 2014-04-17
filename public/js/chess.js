@@ -19,13 +19,110 @@ function CreateBoard (boardHeight, boardWidth) {
 	}
 }
 
-function Check (cell) {
+function CheckRed (cell) {
     $(cell).addClass('checked');
 
 }
 
-function Uncheck (cell) {
+function UncheckRed (cell) {
     $(cell).removeClass('checked');
+}
+
+function CheckGreen (x,y,type,color) {
+
+    if (type == 'pawn')
+        if (color == 'white') {
+            var goalCell = $('[x='+ (parseInt(x)-1) +'][y='+ y +']'); //целевая ячейка белой пешки
+            if (IsEmpty(goalCell)) {
+                goalCell.toggleClass('navigate');
+            }
+        } else {
+            var goalCell = $('[x='+ (parseInt(x)+1) +'][y='+ y +']'); //целевая ячейка черной пешки
+            if (IsEmpty(goalCell)) {
+                goalCell.toggleClass('navigate');
+            }
+
+
+    } else if (type == 'knight') {
+        //выше коня
+        var goalCell1 = $('[x='+ (parseInt(x)-2) +'][y='+ (parseInt(y) +1) +']');
+        var goalCell2 = $('[x='+ (parseInt(x)-2) +'][y='+ (parseInt(y) -1) +']');
+        var goalCell3 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y) -2) +']');
+        var goalCell4 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y) +2) +']');
+        //ниже коня
+        var goalCell5 = $('[x='+ (parseInt(x)+1) +'][y='+ (parseInt(y) +2) +']');
+        var goalCell6 = $('[x='+ (parseInt(x)+1) +'][y='+ (parseInt(y) -2) +']');
+        var goalCell7 = $('[x='+ (parseInt(x)+2) +'][y='+ (parseInt(y) +1) +']');
+        var goalCell8 = $('[x='+ (parseInt(x)+2) +'][y='+ (parseInt(y) -1) +']');
+
+        //если целевая ячейка пустая - подсвечиваем её зеленым
+        if (IsEmpty(goalCell1)) {
+            goalCell1.toggleClass('navigate');
+        }
+        if (IsEmpty(goalCell2)) {
+            goalCell2.toggleClass('navigate');
+        }
+        if (IsEmpty(goalCell3)) {
+            goalCell3.toggleClass('navigate');
+        }
+        if (IsEmpty(goalCell4)) {
+            goalCell4.toggleClass('navigate');
+        }
+        if (IsEmpty(goalCell5)) {
+            goalCell5.toggleClass('navigate');
+        }
+        if (IsEmpty(goalCell6)) {
+            goalCell6.toggleClass('navigate');
+        }
+        if (IsEmpty(goalCell7)) {
+            goalCell7.toggleClass('navigate');
+        }
+        if (IsEmpty(goalCell8)) {
+            goalCell8.toggleClass('navigate');
+        }
+
+    } else if (type == 'rook') {
+        //подсветка предлагаемых ячеек ниже фигуры
+        for (var i = x; i < 9; i++) {
+            var goalCell = $('[x='+ (parseInt(i)+1) +'][y='+ (parseInt(y)) +']');
+            if (IsEmpty(goalCell)) {
+                goalCell.toggleClass('navigate');
+            } else {
+                break;
+            }
+        }
+        //выше фигуры
+        for (var i = x; i > 0; i--) {
+            var goalCell = $('[x='+ (parseInt(i)-1) +'][y='+ (parseInt(y)) +']');
+            if (IsEmpty(goalCell)) {
+                goalCell.toggleClass('navigate');
+            } else {
+                break;
+            }
+        }
+        for (var j = y; j < 9; j++) {
+            var goalCell = $('[x=' + parseInt(x) + '][y=' + (parseInt(j)+1) +']');
+            if (IsEmpty(goalCell)) {
+                goalCell.toggleClass('navigate');
+            } else {
+                break;
+            }
+        }
+        for (var j = y; j > 0; j--) {
+            var goalCell = $('[x=' + parseInt(x) + '][y=' + (parseInt(j)-1) +']');
+            if (IsEmpty(goalCell)) {
+                goalCell.toggleClass('navigate');
+            } else {
+                break;
+            }
+        }
+    }
+
+
+
+
+
+
 }
 
 //для расстановки фигур
@@ -132,40 +229,6 @@ function IsEmpty (cell) {
     return false;
 };
 
-function Move (figure) {
-    $(figure).parent().removeClass('checked');
-
-    figureCords = {'x':$(figure).parent().attr('x'), 'y': $(figure).parent().attr('x')};
-    console.log ('figureCords' + figureCords.x + ' ' + figureCords.y);
-
-    figureID = $(figure).parent().attr('id'); //извлечение id ячейки, на которой стоит пешка
-    //console.log('figure ID: '+ figureID);
-
-    var cell = $('.darkCell, .lightCell');
-
-    cell.click(function() {
-    //$('#board').on('click', cell, function() {
-        console.log('this: ' +this);
-        var clID = $(this).attr('id'); //id ячейки, на которую нажали;
-        var figure_ID = $('#' + figureID); //id фигуры для вставки в jquery
-        var clicked_ID = $('#' + clID);
-        figure_ID.removeClass('checked').empty();
-
-
-        if (IsEmpty(clicked_ID)) {
-            //console.log('Clicked cell ID: ' + clID);
-            //console.log('Clicked figure ID: ' + figureID);
-            $(clicked_ID).append(clFigure);
-            //return;
-
-        } else {
-           console.log('else catch!');
-          //$(clicked_ID).children().remove();
-          //$(clicked_ID).append(clFigure);
-          //return;
-        }
-    });
-};
 
 function newMove (figure, where) {
 
@@ -197,20 +260,24 @@ $(document).ready(function () {
             var clFigureX = $(clFigure).parent().attr('x');
             var clFigureY = $(clFigure).parent().attr('y');
 
-            console.log(clFigure);
+            //console.log(clFigure);
 
             if (whiteMove && clFigureColor == 'white') {
-                Check(this); //выделяем ячейку
-                    if (clFigureType == 'pawn') {
-                        $('[x='+ (clFigureX-1) +'][y='+ clFigureY +']').toggleClass('navigate');
-                    }
+                CheckRed(this); //выделяем ячейку
+                //выделяем возможный вариант хода
+                CheckGreen(clFigureX,clFigureY,clFigureType,clFigureColor);
+
                 checked = true;
 
             } else if (whiteMove && clFigureColor != 'white') {
                 alert ('Error! It\'s white turn!');
             }
             else if (!whiteMove && clFigureColor == 'black') {
-                Check(this); //выделяем ячейку
+                CheckRed(this); //выделяем ячейку
+                //возможный вариант ходов
+                CheckGreen(clFigureX,clFigureY,clFigureType,clFigureColor);
+
+
                 checked = true;
             }
             else if (!whiteMove && clFigureColor == 'white') {
@@ -221,11 +288,11 @@ $(document).ready(function () {
 
         } else if (checked && IsEmpty(this)) {
 
-            Uncheck($(clFigure).parent()); //снимаем выделение
+            UncheckRed($(clFigure).parent()); //снимаем выделение
 
             newMove(clFigure, this);
 
-            $('.navigate').toggleClass('navigate');
+            $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
 
             checked = false;
 
