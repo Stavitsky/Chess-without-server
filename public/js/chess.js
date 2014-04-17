@@ -29,7 +29,7 @@ function UncheckRed (cell) {
     $('.attack').toggleClass('attack');
 }
 
-function CheckGreen (x,y,type,color) {
+function Navigate (x,y,type,color) {
 
     if (type == 'pawn') {
         if (color == 'white') {
@@ -155,7 +155,12 @@ function CheckGreen (x,y,type,color) {
             var goalCell = $('[x='+ (parseInt(i)+1) +'][y='+ (parseInt(y)) +']');
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
-            } else break;
+            } else {
+                if ($(goalCell).children().attr('color') != color) {
+                    goalCell.toggleClass('attack');
+                }
+                break;
+            }
 
         }
         //выше фигуры
@@ -163,60 +168,99 @@ function CheckGreen (x,y,type,color) {
             var goalCell = $('[x='+ (parseInt(i)-1) +'][y='+ (parseInt(y)) +']');
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
-            } else break;
+            } else {
+                if ($(goalCell).children().attr('color') != color) {
+                    goalCell.toggleClass('attack');
+                }
+                break;
+            }
 
         }
         for (var j = y; j < 9; j++) {
             var goalCell = $('[x=' + parseInt(x) + '][y=' + (parseInt(j)+1) +']');
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
-            } else break;
+            } else {
+                if ($(goalCell).children().attr('color') != color) {
+                    goalCell.toggleClass('attack');
+                }
+                break;
+            }
         }
 
         for (var j = y; j > 0; j--) {
             var goalCell = $('[x=' + parseInt(x) + '][y=' + (parseInt(j)-1) +']');
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
-            } else break;
+            } else {
+                if ($(goalCell).children().attr('color') != color) {
+                    goalCell.toggleClass('attack');
+                }
+                break;
+            }
         }
     }
-    else {
-        if (type == 'bitshop') {
-            //goalCell 1-4 - это четыре разных направления возможного движения слона
-            //не придумал, как можно реализовать одним циклом, поэтому 4
+    else if (type == 'bitshop') {
+        //goalCell 1-4 - это четыре разных направления возможного движения слона
+        //не придумал, как можно реализовать одним циклом, поэтому 4
 
-            //юго-восток
-            for (var i = 1; i < 9; i++) {
-                goalCell1 = $('[x=' + (parseInt(x) + i) + '][y=' + (parseInt(y) + i) + ']');
-                if (IsEmpty(goalCell1)) {
-                    goalCell1.toggleClass('navigate');
-                } else break;
-            }
-
-            //юго-запад
-            for (var i = 1; i < 9; i++) {
-                goalCell2 = $('[x=' + (parseInt(x) + i) + '][y=' + (parseInt(y) - i) + ']');
-                if (IsEmpty(goalCell2)) {
-                    goalCell2.toggleClass('navigate');
-                } else break;
-            }
-
-            //с-в
-            for (var i = 1; i < 9; i++) {
-                goalCell3 = $('[x=' + (parseInt(x) - i) + '][y=' + (parseInt(y) + i) + ']');
-                if (IsEmpty(goalCell3)) {
-                    goalCell3.toggleClass('navigate');
-                } else break;
-            }
-
-            //с-з
-            for (var i = 1; i < 9; i++) {
-                goalCell4 = $('[x=' + (parseInt(x) - i) + '][y=' + (parseInt(y) - i) + ']');
-                if (IsEmpty(goalCell4)) {
-                    goalCell4.toggleClass('navigate');
-                } else break;
+        //юго-восток
+        for (var i = 1; i < 9; i++) {
+            goalCell1 = $('[x=' + (parseInt(x) + i) + '][y=' + (parseInt(y) + i) + ']');
+            if (IsEmpty(goalCell1)) {
+                goalCell1.toggleClass('navigate');
+            } else  {
+                if ($(goalCell1).children().attr('color') != color) {
+                    goalCell1.toggleClass('attack');
+                }
+                break;
             }
         }
+
+        //юго-запад
+        for (var i = 1; i < 9; i++) {
+            goalCell2 = $('[x=' + (parseInt(x) + i) + '][y=' + (parseInt(y) - i) + ']');
+            if (IsEmpty(goalCell2)) {
+                goalCell2.toggleClass('navigate');
+            } else {
+                if ($(goalCell2).children().attr('color') != color) {
+                    goalCell2.toggleClass('attack');
+                }
+                break;
+            }
+        }
+
+        //с-в
+        for (var i = 1; i < 9; i++) {
+            goalCell3 = $('[x=' + (parseInt(x) - i) + '][y=' + (parseInt(y) + i) + ']');
+            if (IsEmpty(goalCell3)) {
+                goalCell3.toggleClass('navigate');
+            } else {
+                if ($(goalCell3).children().attr('color') != color) {
+                    goalCell3.toggleClass('attack');
+                }
+                break;
+            }
+        }
+
+        //с-з
+        for (var i = 1; i < 9; i++) {
+            goalCell4 = $('[x=' + (parseInt(x) - i) + '][y=' + (parseInt(y) - i) + ']');
+            if (IsEmpty(goalCell4)) {
+                goalCell4.toggleClass('navigate');
+            } else {
+                if ($(goalCell4).children().attr('color') != color) {
+                    goalCell4.toggleClass('attack');
+                }
+                break;
+            }
+        }
+    }
+    else if (type == 'queen') {
+        //ДОПИЛИТЬ КАК ROOK+BITSHOP
+    }
+    else if (type == 'king') {
+        //доделать
     }
 
 
@@ -226,7 +270,7 @@ function CheckGreen (x,y,type,color) {
 }
 
 //для расстановки фигур
-function Insert (x,y,figure) {
+function InsertFigure (x,y,figure) {
     $('[x='+x+']'+'[y='+y+']').append(figure);
 }
 
@@ -281,42 +325,42 @@ function Dotting () {
         for (var j = 1; j < 9; j++) {
             //пешки
             if (i == 2) {
-                Insert(i,j,whitePawn);
+                InsertFigure(i,j,whitePawn);
             } else if (i == 7) {
-                Insert (i,j,blackPawn);
+                InsertFigure (i,j,blackPawn);
             }
             //черные фигуры первого ряда
             else if (i == 1) {
                 if (j == 1 || j == 8)  {
-                    Insert(i,j, blackRook);
+                    InsertFigure(i,j, blackRook);
                 }
                 else if (j == 2 || j == 7) {
-                    Insert(i,j,blackKnight);
+                    InsertFigure(i,j,blackKnight);
                 }
                 else if (j == 3 || j == 6) {
-                    Insert (i, j, blackBitshop);
+                    InsertFigure (i, j, blackBitshop);
                 }
                 else if (j == 4) {
-                    Insert (i, j, blackQueen);
+                    InsertFigure (i, j, blackQueen);
                 } else if (j == 5) {
-                    Insert(i,j,blackKing);
+                    InsertFigure(i,j,blackKing);
                 }
             }
             //белые фигуры восьмого ряда
             else if (i == 8) {
                 if (j == 1 || j == 8)  {
-                    Insert(i,j, whiteRook);
+                    InsertFigure(i,j, whiteRook);
                 }
                 else if (j == 2 || j == 7) {
-                    Insert(i,j,whiteKnight);
+                    InsertFigure(i,j,whiteKnight);
                 }
                 else if (j == 3 || j == 6) {
-                    Insert (i, j, whiteBitshop);
+                    InsertFigure (i, j, whiteBitshop);
                 }
                 else if (j == 4) {
-                    Insert (i, j, whiteQueen);
+                    InsertFigure (i, j, whiteQueen);
                 } else if (j == 5) {
-                    Insert(i,j,whiteKing);
+                    InsertFigure(i,j,whiteKing);
                 }
             }
         }
@@ -330,7 +374,7 @@ function IsEmpty (cell) {
 };
 
 
-function newMove (figure, where) {
+function Move (figure, where) {
 
     $(where).append(figure);
 };
@@ -365,9 +409,8 @@ $(document).ready(function () {
             if (whiteMove && clFigureColor == 'white') {
                 CheckRed(this); //выделяем ячейку
                 //выделяем возможный вариант хода
-                CheckGreen(clFigureX,clFigureY,clFigureType,clFigureColor);
-
-                checked = true;
+                Navigate(clFigureX,clFigureY,clFigureType,clFigureColor);
+                checked = true; //флаг выбранной фигуры
 
             } else if (whiteMove && clFigureColor != 'white') {
                 alert ('Error! It\'s white turn!');
@@ -375,7 +418,7 @@ $(document).ready(function () {
             else if (!whiteMove && clFigureColor == 'black') {
                 CheckRed(this); //выделяем ячейку
                 //возможный вариант ходов
-                CheckGreen(clFigureX,clFigureY,clFigureType,clFigureColor);
+                Navigate(clFigureX,clFigureY,clFigureType,clFigureColor);
 
 
                 checked = true;
@@ -390,13 +433,13 @@ $(document).ready(function () {
 
             UncheckRed($(clFigure).parent()); //снимаем выделение
 
-            newMove(clFigure, this);
+            Move(clFigure, this);
 
             $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
 
-            checked = false;
+            checked = false; //снимаем флаг выбранной фигуры
 
-            whiteMove = ToggleTurn(whiteMove);
+            whiteMove = ToggleTurn(whiteMove); //переход хода
 
 
         } else if (checked && !IsEmpty(this)) {
