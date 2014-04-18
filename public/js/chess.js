@@ -5,6 +5,8 @@
 pathToLight = 'figures/light/White';
 pathToDark = 'figures/dark/Black';
 
+checked = false; //изначально нет выбранной фигуры
+
 //Создание доски
 function CreateBoard (boardHeight, boardWidth) {
 	var board = $('#board');
@@ -21,12 +23,20 @@ function CreateBoard (boardHeight, boardWidth) {
 
 function CheckRed (cell) {
     $(cell).addClass('checked');
+    checked = true; //флаг выбранной фигуры
 
+}
+
+function ClickChecked(cell) {
+    UncheckRed(cell);
+    $('navigate').toggleClass('navigate');
+    $('attack').toggleClass('attack');
 }
 
 function UncheckRed (cell) {
     $(cell).removeClass('checked');
     $('.attack').toggleClass('attack');
+    checked = false; //снимаем флаг выбранной фигуры
 }
 
 function Navigate (x,y,type,color) {
@@ -61,7 +71,7 @@ function Navigate (x,y,type,color) {
             if (!IsEmpty(attackCell1) && $(attackCell1).children().attr('color') != color) {
                 attackCell1.toggleClass('attack')
             }
-            if (!IsEmpty(attackCell2) && $(attackCell1).children().attr('color') != color) {
+            if (!IsEmpty(attackCell2) && $(attackCell2).children().attr('color') != color) {
                 attackCell2.toggleClass('attack')
             }
         }
@@ -71,7 +81,6 @@ function Navigate (x,y,type,color) {
 
         //выше коня
         var goalCell1 = $('[x='+ (parseInt(x)-2) +'][y='+ (parseInt(y) +1) +']');
-        //var goalCell1 = $('[x='+ (x-2) +'][y='+ (y +1) +']');
         var goalCell2 = $('[x='+ (parseInt(x)-2) +'][y='+ (parseInt(y) -1) +']');
         var goalCell3 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y) -2) +']');
         var goalCell4 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y) +2) +']');
@@ -450,11 +459,12 @@ function IsEmpty (cell) {
 
 function Move (figure, where) {
     if ($(where).hasClass('navigate')) {
-        $(where).append(figure);
+        UncheckRed($(clFigure).parent()); //снимаем выделение
+        $(where).append(figure); //передвигаем картинку
+        return true; //успех
     } else {
-        //дыра в том, что в случае, если срабатывает else
-        //мы выходим из функции и теряем ход - допилить
         alert ('Can\'t move here!');
+        return false;
     }
 
 };
@@ -465,7 +475,7 @@ function Move (figure, where) {
 $(document).ready(function () {
 
     var whiteMove = true;
-	var checked = false;
+	//var checked = false;
 
 	CreateBoard (8,8);
 	Dotting();
@@ -476,13 +486,13 @@ $(document).ready(function () {
 	//figure.click(function() {
     $('#board').on('click', cell, function(){
 
-        if (!checked && !IsEmpty(this)) {
+        if (!checked && !IsEmpty(this)) { //если нет выбранной фигуры и ячейка не пустая
 
             clFigure = $(this).children()[0]; //запоминаем фигуру
-            var clFigureColor = $(clFigure).attr('color');
-            var clFigureType = $(clFigure).attr('type');
-            var clFigureX = $(clFigure).parent().attr('x');
-            var clFigureY = $(clFigure).parent().attr('y');
+            var clFigureColor = $(clFigure).attr('color'); //цвет
+            var clFigureType = $(clFigure).attr('type'); //тип
+            var clFigureX = $(clFigure).parent().attr('x'); //x
+            var clFigureY = $(clFigure).parent().attr('y'); //y
 
             //console.log(clFigure);
 
@@ -490,7 +500,7 @@ $(document).ready(function () {
                 CheckRed(this); //выделяем ячейку
                 //выделяем возможный вариант хода
                 Navigate(clFigureX,clFigureY,clFigureType,clFigureColor);
-                checked = true; //флаг выбранной фигуры
+                //checked = true; //флаг выбранной фигуры
 
             } else if (whiteMove && clFigureColor != 'white') {
                 alert ('Error! It\'s white turn!');
@@ -509,16 +519,23 @@ $(document).ready(function () {
 
 
 
-        } else if (checked && IsEmpty(this)) {
+        }
+        else if (checked && $(this).hasClass('checked')) {
+            console.log ('Checked figure clicked!');
+            ClickChecked(this);
 
-            UncheckRed($(clFigure).parent()); //снимаем выделение
-            Move(clFigure, this);
-            $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
-            checked = false; //снимаем флаг выбранной фигуры
-            whiteMove = ToggleTurn(whiteMove); //переход хода
+        }
+        else if (checked && IsEmpty(this)) {
 
+            if (Move(clFigure, this)) {
 
-        } else if (checked && !IsEmpty(this)) {
+                $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
+                //checked = false; //снимаем флаг выбранной фигуры
+                whiteMove = ToggleTurn(whiteMove); //переход хода
+            }
+
+        }
+        else if (checked && !IsEmpty(this)) {
             console.log ('Not empty!');
         }
 	});
