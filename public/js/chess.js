@@ -368,11 +368,6 @@ function Navigate (x,y,type,color) {
 
 
     }
-
-
-
-
-
 }
 
 //для расстановки фигур
@@ -477,7 +472,7 @@ function Dotting () {
 function IsEmpty (cell) {
     if ($(cell).find('img').length == 0) return true;
     return false;
-};
+}
 
 //движение фигуры
 function Move (figure, where) {
@@ -490,15 +485,31 @@ function Move (figure, where) {
         return false;
     }
 
-};
+}
 
+function Attack (attackedCell) {
+    if ($(attackedCell).hasClass('attack')) {
+        var attackedFigure = $(attackedCell).children();
+        var attackedFigureColor = attackedFigure.attr('color');
+        $(attackedCell).toggleClass('navigate').toggleClass('attack');
+
+        if (attackedFigureColor == 'black') {
+            $('#boxForBlack').append(attackedFigure);
+        } else {
+            $('#boxForWhite').append(attackedFigure);
+        }
+    } else {
+        alert('Can\'t attack!');
+    }
+
+
+}
 
 //whiteMove = true; //первый ход - белым
 
 $(document).ready(function () {
 
     var whiteMove = true;
-	//var checked = false;
 
 	CreateBoard (8,8);
 	Dotting();
@@ -550,7 +561,7 @@ $(document).ready(function () {
         }
         else if (checked && IsEmpty(this)) {
 
-            if (Move(clFigure, this)) {
+            if (Move(clFigure, this)) { //если ход совершен
 
                 $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
                 whiteMove = ToggleTurn(whiteMove); //переход хода
@@ -559,6 +570,14 @@ $(document).ready(function () {
         }
         else if (checked && !IsEmpty(this)) {
             console.log ('Not empty!');
+            Attack(this);
+            if (Move(clFigure,this)) {
+                $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
+                whiteMove = ToggleTurn(whiteMove); //переход хода
+            }
+
+
+
         }
 	});
 });
