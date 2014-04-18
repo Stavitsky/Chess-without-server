@@ -30,22 +30,104 @@ function CreateBoard (boardHeight, boardWidth) {
 	}
 }
 
+//расстановка фигур
+function Dotting () {
+
+    cell = $(".whiteCell,.darkCell");
+
+    /*
+     pawn - пешка
+     rook - ладья
+     khight - конь
+     bitshop - слон
+     queen - ферзь
+     king - король
+     */
+
+
+    //пешки
+    var blackPawn = '<img color="white" type="pawn" src="'+pathToLight+' P.ico">';
+    var whitePawn = '<img color="black" type="pawn" src="'+pathToDark+' P.ico">';
+    //ладьи
+    var blackRook = '<img color="black" type="rook" src="' + pathToDark + ' R.ico">';
+    var whiteRook = '<img color="white" type="rook" src="' + pathToLight + ' R.ico">';
+    //кони
+    var blackKnight = '<img color="black" type="knight" src="' + pathToDark + ' N.ico">';
+    var whiteKnight = '<img color="white" type="knight" src="' + pathToLight + ' N.ico">';
+    //слоны
+    var blackBitshop = '<img color="black" type="bitshop" src="' + pathToDark + ' B.ico">';
+    var whiteBitshop = '<img color="white" type="bitshop" src="' + pathToLight + ' B.ico">';
+    //ферзи
+    var blackQueen = '<img color="black" type="queen" src="' + pathToDark + ' Q.ico">';
+    var whiteQueen = '<img color="white" type="queen" src="' + pathToLight + ' Q.ico">';
+    //короли
+    var blackKing = '<img color="black" type="king" src="' + pathToDark + ' K.ico">';
+    var whiteKing = '<img color="white" type="king" src="' + pathToLight + ' K.ico">';
+
+
+    for (var i = 1; i < 9; i++) {
+        for (var j = 1; j < 9; j++) {
+            //пешки
+            if (i == 2) {
+                InsertFigure(i,j,whitePawn);
+            } else if (i == 7) {
+                InsertFigure (i,j,blackPawn);
+            }
+            //черные фигуры первого ряда
+            else if (i == 1) {
+                if (j == 1 || j == 8)  {
+                    InsertFigure(i,j, blackRook);
+                }
+                else if (j == 2 || j == 7) {
+                    InsertFigure(i,j,blackKnight);
+                }
+                else if (j == 3 || j == 6) {
+                    InsertFigure (i, j, blackBitshop);
+                }
+                else if (j == 4) {
+                    InsertFigure (i, j, blackQueen);
+                } else if (j == 5) {
+                    InsertFigure(i,j,blackKing);
+                }
+            }
+            //белые фигуры восьмого ряда
+            else if (i == 8) {
+                if (j == 1 || j == 8)  {
+                    InsertFigure(i,j, whiteRook);
+                }
+                else if (j == 2 || j == 7) {
+                    InsertFigure(i,j,whiteKnight);
+                }
+                else if (j == 3 || j == 6) {
+                    InsertFigure (i, j, whiteBitshop);
+                }
+                else if (j == 4) {
+                    InsertFigure (i, j, whiteQueen);
+                } else if (j == 5) {
+                    InsertFigure(i,j,whiteKing);
+                }
+            }
+        }
+    }
+}
+
+//отметить выбранную фиругу
 function CheckRed (cell) {
     $(cell).addClass('checked');
     checked = true; //флаг выбранной фигуры
 
 }
-
-function ClickChecked(cell) {
-    UncheckRed(cell);
-    $('.navigate').toggleClass('navigate');
-    $('.attack').toggleClass('attack');
-}
-
+//снять отметку с фигуры
 function UncheckRed (cell) {
     $(cell).removeClass('checked');
     $('.attack').toggleClass('attack');
     checked = false; //снимаем флаг выбранной фигуры
+}
+//повторный клик по уже выбранной фигуре
+function ClickChecked(cell) {
+    UncheckRed(cell); //снимаем выделение с фигуры
+    $('.navigate').toggleClass('navigate'); //удалем варианты ходов
+    $('.attack').toggleClass('attack'); //удаляем варианты атаки
 }
 
 //вынес подсветку ладьи и слона,
@@ -159,6 +241,7 @@ function BitshopMoveLogic(x,y,color){
 
 }
 
+//отрисовка логики ходов для фигур
 function Navigate (x,y,type,color) {
 
     if (type == 'pawn') {
@@ -292,6 +375,9 @@ function Navigate (x,y,type,color) {
         BitshopMoveLogic(x,y,color);
     }
     else if (type == 'king') {
+
+        var numberOfKingMoves = 0; //количество возможных ходов короля;
+
         //все возможные шаги вокруг короля
         var goalCell1 = $('[x='+ (parseInt(x) +1) +'][y='+ (parseInt(y) +1) +']');
         var goalCell2 = $('[x='+ (parseInt(x) +1) +'][y='+ (parseInt(y)) +']');
@@ -370,102 +456,13 @@ function Navigate (x,y,type,color) {
     }
 }
 
-//для расстановки фигур
+//вставка фигуры в координаты
 function InsertFigure (x,y,figure) {
     $('[x='+x+']'+'[y='+y+']').append(figure);
 }
-
 //переключение хода
 function ToggleTurn (turn) {
     return !turn;
-}
-
-//расстановка фигур
-function Dotting () {
-
-    cell = $(".whiteCell,.darkCell");
-
-	/*
-	pawn - пешка
-	rook - ладья
-	khight - конь
-	bitshop - слон
-	queen - ферзь
-	king - король
-	*/
-
-//    console.log("jquery.type: "+ JQuery.type(null));
-
-    //пешки
-    var blackPawn = '<img color="white" type="pawn" src="'+pathToLight+' P.ico">';
-    var whitePawn = '<img color="black" type="pawn" src="'+pathToDark+' P.ico">';
-    //ладьи
-    var blackRook = '<img color="black" type="rook" src="' + pathToDark + ' R.ico">';
-    var whiteRook = '<img color="white" type="rook" src="' + pathToLight + ' R.ico">';
-    //кони
-    var blackKnight = '<img color="black" type="knight" src="' + pathToDark + ' N.ico">';
-    var whiteKnight = '<img color="white" type="knight" src="' + pathToLight + ' N.ico">';
-    //слоны
-    var blackBitshop = '<img color="black" type="bitshop" src="' + pathToDark + ' B.ico">';
-    var whiteBitshop = '<img color="white" type="bitshop" src="' + pathToLight + ' B.ico">';
-    //ферзи
-    var blackQueen = '<img color="black" type="queen" src="' + pathToDark + ' Q.ico">';
-    var whiteQueen = '<img color="white" type="queen" src="' + pathToLight + ' Q.ico">';
-    //короли
-    var blackKing = '<img color="black" type="king" src="' + pathToDark + ' K.ico">';
-    var whiteKing = '<img color="white" type="king" src="' + pathToLight + ' K.ico">';
-
-
-/*
-    for (var i = 0; i < 71; i++) {
-        cell.eq(i).attr('id',i);         //нумерация ячеек id
-    }
-*/
-
-    for (var i = 1; i < 9; i++) {
-        for (var j = 1; j < 9; j++) {
-            //пешки
-            if (i == 2) {
-                //InsertFigure(i,j,whitePawn);
-            } else if (i == 7) {
-                //InsertFigure (i,j,blackPawn);
-            }
-            //черные фигуры первого ряда
-            else if (i == 1) {
-                if (j == 1 || j == 8)  {
-                    InsertFigure(i,j, blackRook);
-                }
-                else if (j == 2 || j == 7) {
-                    InsertFigure(i,j,blackKnight);
-                }
-                else if (j == 3 || j == 6) {
-                    InsertFigure (i, j, blackBitshop);
-                }
-                else if (j == 4) {
-                    InsertFigure (i, j, blackQueen);
-                } else if (j == 5) {
-                    InsertFigure(i,j,blackKing);
-                }
-            }
-            //белые фигуры восьмого ряда
-            else if (i == 8) {
-                if (j == 1 || j == 8)  {
-                    InsertFigure(i,j, whiteRook);
-                }
-                else if (j == 2 || j == 7) {
-                    InsertFigure(i,j,whiteKnight);
-                }
-                else if (j == 3 || j == 6) {
-                    InsertFigure (i, j, whiteBitshop);
-                }
-                else if (j == 4) {
-                    InsertFigure (i, j, whiteQueen);
-                } else if (j == 5) {
-                    InsertFigure(i,j,whiteKing);
-                }
-            }
-        }
-    }
 }
 
 //проверка ячейки на наличие фигурки
@@ -487,16 +484,19 @@ function Move (figure, where) {
 
 }
 
+//атака фигуры
 function Attack (attackedCell) {
-    if ($(attackedCell).hasClass('attack')) {
-        var attackedFigure = $(attackedCell).children();
-        var attackedFigureColor = attackedFigure.attr('color');
-        $(attackedCell).toggleClass('navigate').toggleClass('attack');
+    if ($(attackedCell).hasClass('attack')) { //если выбранная ячейка имеет класс атакуемой
+        var attackedFigure = $(attackedCell).children(); //запоминаем атакованную фигуру
+        var attackedFigureColor = attackedFigure.attr('color'); //запоминаем ее цвет
+        //удаляем класс "атакуемая" и добавляем класс "навигация"
+        //для того, чтобы можно было в неё перейти после удаления фигуры
+        $(attackedCell).toggleClass('attack').toggleClass('navigate');
 
-        if (attackedFigureColor == 'black') {
-            $('#boxForBlack').append(attackedFigure);
+        if (attackedFigureColor == 'black') { //если цвет был черный
+            $('#boxForBlack').append(attackedFigure); //в отделение для захваченных черных
         } else {
-            $('#boxForWhite').append(attackedFigure);
+            $('#boxForWhite').append(attackedFigure); //для белых
         }
     } else {
         alert('Can\'t attack!');
@@ -511,14 +511,16 @@ $(document).ready(function () {
 
     var whiteMove = true;
 
+
+
 	CreateBoard (8,8);
 	Dotting();
 
     var cell = '.darkCell,.lightCell';
 
 
-	//figure.click(function() {
-    $('#board').on('click', cell, function(){
+
+    $('#board').on('click', cell, function(){ //в случае клика по ячейке внутри board
 
         if (!checked && !IsEmpty(this)) { //если нет выбранной фигуры и ячейка не пустая
 
@@ -527,8 +529,6 @@ $(document).ready(function () {
             var clFigureType = $(clFigure).attr('type'); //тип
             var clFigureX = $(clFigure).parent().attr('x'); //x
             var clFigureY = $(clFigure).parent().attr('y'); //y
-
-            //console.log(clFigure);
 
             if (whiteMove && clFigureColor == 'white') {
                 CheckRed(this); //выделяем ячейку
@@ -543,41 +543,35 @@ $(document).ready(function () {
                 CheckRed(this); //выделяем ячейку
                 //возможный вариант ходов
                 Navigate(clFigureX,clFigureY,clFigureType,clFigureColor);
-
-
                 checked = true;
             }
             else if (!whiteMove && clFigureColor == 'white') {
                 alert ('Error! It\'s black turn!');
             }
-
-
+        }
+        else if (checked && $(this).hasClass('checked')) {//клик по уже выбранной фигуре
+            ClickChecked(this); //отменить выделение
 
         }
-        else if (checked && $(this).hasClass('checked')) {
-            console.log ('Checked figure clicked!');
-            ClickChecked(this);
+        else if (checked && IsEmpty(this)) { //фигура выбрала, клик в пустую ячейку
 
-        }
-        else if (checked && IsEmpty(this)) {
-
-            if (Move(clFigure, this)) { //если ход совершен
-
+            if (Move(clFigure, this)) { //если ход можно совершить
                 $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
                 whiteMove = ToggleTurn(whiteMove); //переход хода
             }
 
         }
         else if (checked && !IsEmpty(this)) {
-            console.log ('Not empty!');
             Attack(this);
             if (Move(clFigure,this)) {
                 $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
                 whiteMove = ToggleTurn(whiteMove); //переход хода
             }
-
-
-
+        }
+        if (whiteMove) {
+            $('#information').text('White\'s move!');
+        } else {
+            $('#information').text('Black\'s move!');
         }
 	});
 });

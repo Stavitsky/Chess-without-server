@@ -5,6 +5,12 @@
     border: solid 1px black;
 
 }
+
+#information {
+    text-align: center;
+    font-size: 30;
+}
+
 .box {
     width: 432px;
     height: 100px;
