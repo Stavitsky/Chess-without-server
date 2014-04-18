@@ -243,8 +243,8 @@ function BitshopMoveLogic(x,y,color){
 
 //отрисовка логики ходов для фигур
 function Navigate (x,y,type,color) {
-
-    if (type == 'pawn') {
+    //пешка
+    if (type == 'pawn')  {
         if (color == 'white') {
             var goalCell = $('[x='+ (parseInt(x)-1) +'][y='+ y +']'); //целевая ячейка белой пешки
             var attackCell1 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y)+1) +']'); //правая под атакой белой
@@ -253,6 +253,14 @@ function Navigate (x,y,type,color) {
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
             }
+
+            if (x == 7) { //если это первый шаг этой пешки
+                var goalCell_1 = $('[x='+ (parseInt(x)-2) +'][y='+ y +']'); //добавляем ей шаг на две клетки вперед
+                if (IsEmpty(goalCell_1)) {
+                    goalCell_1.toggleClass('navigate'); //подсвечиваем его
+                }
+            }
+
             //если в ячейке по диагонали есть фигура и она противоположного цвета
             if (!IsEmpty(attackCell1) && $(attackCell1).children().attr('color') != color) {
                 attackCell1.toggleClass('attack')
@@ -262,13 +270,21 @@ function Navigate (x,y,type,color) {
             }
 
 
-        } else if (color == 'black') {
+        }
+        else if (color == 'black') {
             var goalCell = $('[x='+ (parseInt(x)+1) +'][y='+ y +']'); //целевая ячейка черной пешки
             var attackCell1 = $('[x='+ (parseInt(x)+1) +'][y='+ (parseInt(y)+1) +']'); //правая под атакой черной
             var attackCell2 = $('[x='+ (parseInt(x)+1) +'][y='+ (parseInt(y)-1) +']'); //левая под атакой черной
 
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
+            }
+
+            if (x == 2) { //если это первый шаг этой пешки
+                var goalCell_1 = $('[x='+ (parseInt(x)+2) +'][y='+ y +']'); //добавляем ей шаг на две клетки вперед
+                if (IsEmpty(goalCell_1)) {
+                    goalCell_1.toggleClass('navigate'); //подсвечиваем его
+                }
             }
             //если в ячейке по диагонали есть фигура и она противоположного цвета
             if (!IsEmpty(attackCell1) && $(attackCell1).children().attr('color') != color) {
@@ -279,6 +295,7 @@ function Navigate (x,y,type,color) {
             }
         }
     }
+    //конь
     else if (type == 'knight') {
         //goalCell1-8 - возможные варианты хода коня
 
@@ -361,12 +378,15 @@ function Navigate (x,y,type,color) {
         }
 
     }
+    //ладья
     else if (type == 'rook') {
         RookMoveLogic(x,y,color);
     }
+    //слон
     else if (type == 'bitshop') {
         BitshopMoveLogic(x,y,color);
     }
+    //ферзь
     else if (type == 'queen') {
 
         //логика ферзя = логика ладьи+логика слона
@@ -374,6 +394,7 @@ function Navigate (x,y,type,color) {
         RookMoveLogic(x,y,color);
         BitshopMoveLogic(x,y,color);
     }
+    //король
     else if (type == 'king') {
 
         var numberOfKingMoves = 0; //количество возможных ходов короля;
@@ -505,18 +526,14 @@ function Attack (attackedCell) {
 
 }
 
-//whiteMove = true; //первый ход - белым
-
 $(document).ready(function () {
 
-    var whiteMove = true;
+    var whiteMove = true; //первые - белые
 
+	CreateBoard (8,8); //создать доску 8х8
+	Dotting(); //расставить фигуры
 
-
-	CreateBoard (8,8);
-	Dotting();
-
-    var cell = '.darkCell,.lightCell';
+    var cell = '.darkCell,.lightCell'; //cell - это элементы с классами dC и lC
 
 
 
