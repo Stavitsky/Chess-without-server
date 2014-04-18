@@ -1,6 +1,15 @@
 //флажок на цвет
 //флажок на выбранную фигуру
 
+/*
+ pawn - пешка
+ rook - ладья
+ khight - конь
+ bitshop - слон
+ queen - ферзь
+ king - король
+ */
+
 //пути к иконкам
 pathToLight = 'figures/light/White';
 pathToDark = 'figures/dark/Black';
@@ -29,14 +38,125 @@ function CheckRed (cell) {
 
 function ClickChecked(cell) {
     UncheckRed(cell);
-    $('navigate').toggleClass('navigate');
-    $('attack').toggleClass('attack');
+    $('.navigate').toggleClass('navigate');
+    $('.attack').toggleClass('attack');
 }
 
 function UncheckRed (cell) {
     $(cell).removeClass('checked');
     $('.attack').toggleClass('attack');
     checked = false; //снимаем флаг выбранной фигуры
+}
+
+//вынес подсветку ладьи и слона,
+//т.к. их логика используется еще и ферзем
+function RookMoveLogic(x,y,color){
+    //подсветка предлагаемых ячеек ниже фигуры
+    for (var i = x; i < 9; i++) {
+        var goalCell = $('[x='+ (parseInt(i)+1) +'][y='+ (parseInt(y)) +']');
+        if (IsEmpty(goalCell)) {
+            goalCell.toggleClass('navigate');
+        } else {
+            if ($(goalCell).children().attr('color') != color) {
+                goalCell.toggleClass('attack');
+            }
+            break;
+        }
+
+    }
+    //выше фигуры
+    for (var i = x; i > 0; i--) {
+        var goalCell = $('[x='+ (parseInt(i)-1) +'][y='+ (parseInt(y)) +']');
+        if (IsEmpty(goalCell)) {
+            goalCell.toggleClass('navigate');
+        } else {
+            if ($(goalCell).children().attr('color') != color) {
+                goalCell.toggleClass('attack');
+            }
+            break;
+        }
+
+    }
+    for (var j = y; j < 9; j++) {
+        var goalCell = $('[x=' + parseInt(x) + '][y=' + (parseInt(j)+1) +']');
+        if (IsEmpty(goalCell)) {
+            goalCell.toggleClass('navigate');
+        } else {
+            if ($(goalCell).children().attr('color') != color) {
+                goalCell.toggleClass('attack');
+            }
+            break;
+        }
+    }
+
+    for (var j = y; j > 0; j--) {
+        var goalCell = $('[x=' + parseInt(x) + '][y=' + (parseInt(j)-1) +']');
+        if (IsEmpty(goalCell)) {
+            goalCell.toggleClass('navigate');
+        } else {
+            if ($(goalCell).children().attr('color') != color) {
+                goalCell.toggleClass('attack');
+            }
+            break;
+        }
+    }
+}
+function BitshopMoveLogic(x,y,color){
+    //goalCell 1-4 - это четыре разных направления возможного движения слона
+    //не придумал, как можно реализовать одним циклом, поэтому 4
+
+    //юго-восток
+    for (var i = 1; i < 9; i++) {
+        goalCell1 = $('[x=' + (parseInt(x) + i) + '][y=' + (parseInt(y) + i) + ']');
+        if (IsEmpty(goalCell1)) {
+            goalCell1.toggleClass('navigate');
+        } else  {
+            if ($(goalCell1).children().attr('color') != color) {
+                goalCell1.toggleClass('attack');
+            }
+            break;
+        }
+    }
+
+    //юго-запад
+    for (var i = 1; i < 9; i++) {
+        goalCell2 = $('[x=' + (parseInt(x) + i) + '][y=' + (parseInt(y) - i) + ']');
+        if (IsEmpty(goalCell2)) {
+            goalCell2.toggleClass('navigate');
+        } else {
+            if ($(goalCell2).children().attr('color') != color) {
+                goalCell2.toggleClass('attack');
+            }
+            break;
+        }
+    }
+
+    //с-в
+    for (var i = 1; i < 9; i++) {
+        goalCell3 = $('[x=' + (parseInt(x) - i) + '][y=' + (parseInt(y) + i) + ']');
+        if (IsEmpty(goalCell3)) {
+            goalCell3.toggleClass('navigate');
+        } else {
+            if ($(goalCell3).children().attr('color') != color) {
+                goalCell3.toggleClass('attack');
+            }
+            break;
+        }
+    }
+
+    //с-з
+    for (var i = 1; i < 9; i++) {
+        goalCell4 = $('[x=' + (parseInt(x) - i) + '][y=' + (parseInt(y) - i) + ']');
+        if (IsEmpty(goalCell4)) {
+            goalCell4.toggleClass('navigate');
+        } else {
+            if ($(goalCell4).children().attr('color') != color) {
+                goalCell4.toggleClass('attack');
+            }
+            break;
+        }
+    }
+
 }
 
 function Navigate (x,y,type,color) {
@@ -159,114 +279,17 @@ function Navigate (x,y,type,color) {
 
     }
     else if (type == 'rook') {
-        //подсветка предлагаемых ячеек ниже фигуры
-        for (var i = x; i < 9; i++) {
-            var goalCell = $('[x='+ (parseInt(i)+1) +'][y='+ (parseInt(y)) +']');
-            if (IsEmpty(goalCell)) {
-                goalCell.toggleClass('navigate');
-            } else {
-                if ($(goalCell).children().attr('color') != color) {
-                    goalCell.toggleClass('attack');
-                }
-                break;
-            }
-
-        }
-        //выше фигуры
-        for (var i = x; i > 0; i--) {
-            var goalCell = $('[x='+ (parseInt(i)-1) +'][y='+ (parseInt(y)) +']');
-            if (IsEmpty(goalCell)) {
-                goalCell.toggleClass('navigate');
-            } else {
-                if ($(goalCell).children().attr('color') != color) {
-                    goalCell.toggleClass('attack');
-                }
-                break;
-            }
-
-        }
-        for (var j = y; j < 9; j++) {
-            var goalCell = $('[x=' + parseInt(x) + '][y=' + (parseInt(j)+1) +']');
-            if (IsEmpty(goalCell)) {
-                goalCell.toggleClass('navigate');
-            } else {
-                if ($(goalCell).children().attr('color') != color) {
-                    goalCell.toggleClass('attack');
-                }
-                break;
-            }
-        }
-
-        for (var j = y; j > 0; j--) {
-            var goalCell = $('[x=' + parseInt(x) + '][y=' + (parseInt(j)-1) +']');
-            if (IsEmpty(goalCell)) {
-                goalCell.toggleClass('navigate');
-            } else {
-                if ($(goalCell).children().attr('color') != color) {
-                    goalCell.toggleClass('attack');
-                }
-                break;
-            }
-        }
+        RookMoveLogic(x,y,color);
     }
     else if (type == 'bitshop') {
-        //goalCell 1-4 - это четыре разных направления возможного движения слона
-        //не придумал, как можно реализовать одним циклом, поэтому 4
-
-        //юго-восток
-        for (var i = 1; i < 9; i++) {
-            goalCell1 = $('[x=' + (parseInt(x) + i) + '][y=' + (parseInt(y) + i) + ']');
-            if (IsEmpty(goalCell1)) {
-                goalCell1.toggleClass('navigate');
-            } else  {
-                if ($(goalCell1).children().attr('color') != color) {
-                    goalCell1.toggleClass('attack');
-                }
-                break;
-            }
-        }
-
-        //юго-запад
-        for (var i = 1; i < 9; i++) {
-            goalCell2 = $('[x=' + (parseInt(x) + i) + '][y=' + (parseInt(y) - i) + ']');
-            if (IsEmpty(goalCell2)) {
-                goalCell2.toggleClass('navigate');
-            } else {
-                if ($(goalCell2).children().attr('color') != color) {
-                    goalCell2.toggleClass('attack');
-                }
-                break;
-            }
-        }
-
-        //с-в
-        for (var i = 1; i < 9; i++) {
-            goalCell3 = $('[x=' + (parseInt(x) - i) + '][y=' + (parseInt(y) + i) + ']');
-            if (IsEmpty(goalCell3)) {
-                goalCell3.toggleClass('navigate');
-            } else {
-                if ($(goalCell3).children().attr('color') != color) {
-                    goalCell3.toggleClass('attack');
-                }
-                break;
-            }
-        }
-
-        //с-з
-        for (var i = 1; i < 9; i++) {
-            goalCell4 = $('[x=' + (parseInt(x) - i) + '][y=' + (parseInt(y) - i) + ']');
-            if (IsEmpty(goalCell4)) {
-                goalCell4.toggleClass('navigate');
-            } else {
-                if ($(goalCell4).children().attr('color') != color) {
-                    goalCell4.toggleClass('attack');
-                }
-                break;
-            }
-        }
+        BitshopMoveLogic(x,y,color);
     }
     else if (type == 'queen') {
-        //ДОПИЛИТЬ КАК ROOK+BITSHOP
+
+        //логика ферзя = логика ладьи+логика слона
+
+        RookMoveLogic(x,y,color);
+        BitshopMoveLogic(x,y,color);
     }
     else if (type == 'king') {
         //все возможные шаги вокруг короля
@@ -408,9 +431,9 @@ function Dotting () {
         for (var j = 1; j < 9; j++) {
             //пешки
             if (i == 2) {
-                InsertFigure(i,j,whitePawn);
+                //InsertFigure(i,j,whitePawn);
             } else if (i == 7) {
-                InsertFigure (i,j,blackPawn);
+                //InsertFigure (i,j,blackPawn);
             }
             //черные фигуры первого ряда
             else if (i == 1) {
@@ -456,7 +479,7 @@ function IsEmpty (cell) {
     return false;
 };
 
-
+//движение фигуры
 function Move (figure, where) {
     if ($(where).hasClass('navigate')) {
         UncheckRed($(clFigure).parent()); //снимаем выделение
@@ -530,7 +553,6 @@ $(document).ready(function () {
             if (Move(clFigure, this)) {
 
                 $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
-                //checked = false; //снимаем флаг выбранной фигуры
                 whiteMove = ToggleTurn(whiteMove); //переход хода
             }
 
