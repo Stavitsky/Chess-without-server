@@ -9,10 +9,30 @@
  queen - ферзь
  king - король
  */
-
 //пути к иконкам
 pathToLight = 'figures/light/White';
 pathToDark = 'figures/dark/Black';
+
+//пешки
+var blackPawn = '<img color="white" type="pawn" src="'+pathToLight+' P.ico">';
+var whitePawn = '<img color="black" type="pawn" src="'+pathToDark+' P.ico">';
+//ладьи
+var blackRook = '<img color="black" type="rook" src="' + pathToDark + ' R.ico">';
+var whiteRook = '<img color="white" type="rook" src="' + pathToLight + ' R.ico">';
+//кони
+var blackKnight = '<img color="black" type="knight" src="' + pathToDark + ' N.ico">';
+var whiteKnight = '<img color="white" type="knight" src="' + pathToLight + ' N.ico">';
+//слоны
+var blackBitshop = '<img color="black" type="bitshop" src="' + pathToDark + ' B.ico">';
+var whiteBitshop = '<img color="white" type="bitshop" src="' + pathToLight + ' B.ico">';
+//ферзи
+var blackQueen = '<img color="black" type="queen" src="' + pathToDark + ' Q.ico">';
+var whiteQueen = '<img color="white" type="queen" src="' + pathToLight + ' Q.ico">';
+//короли
+var blackKing = '<img color="black" type="king" src="' + pathToDark + ' K.ico">';
+var whiteKing = '<img color="white" type="king" src="' + pathToLight + ' K.ico">';
+
+
 
 checked = false; //изначально нет выбранной фигуры
 
@@ -44,7 +64,7 @@ function Dotting () {
      king - король
      */
 
-
+/*
     //пешки
     var blackPawn = '<img color="white" type="pawn" src="'+pathToLight+' P.ico">';
     var whitePawn = '<img color="black" type="pawn" src="'+pathToDark+' P.ico">';
@@ -63,14 +83,15 @@ function Dotting () {
     //короли
     var blackKing = '<img color="black" type="king" src="' + pathToDark + ' K.ico">';
     var whiteKing = '<img color="white" type="king" src="' + pathToLight + ' K.ico">';
-
+*/
 
     for (var i = 1; i < 9; i++) {
         for (var j = 1; j < 9; j++) {
             //пешки
             if (i == 2) {
                 InsertFigure(i,j,whitePawn);
-            } else if (i == 7) {
+            }
+            else if (i == 7) {
                 InsertFigure (i,j,blackPawn);
             }
             //черные фигуры первого ряда
@@ -86,7 +107,8 @@ function Dotting () {
                 }
                 else if (j == 4) {
                     InsertFigure (i, j, blackQueen);
-                } else if (j == 5) {
+                }
+                else if (j == 5) {
                     InsertFigure(i,j,blackKing);
                 }
             }
@@ -103,7 +125,8 @@ function Dotting () {
                 }
                 else if (j == 4) {
                     InsertFigure (i, j, whiteQueen);
-                } else if (j == 5) {
+                }
+                else if (j == 5) {
                     InsertFigure(i,j,whiteKing);
                 }
             }
@@ -111,6 +134,19 @@ function Dotting () {
     }
 }
 
+function PawnToQueen(where, figure){
+    var figureColor = $(figure).attr('color');
+    var xCord = $(where).attr('x');
+
+    if (figureColor == 'white' && xCord == 1) {
+        $(figure).remove();
+        $(where).append(whiteQueen);
+    } else if (figureColor == 'black' && xCord == 8) {
+        $(figure).remove();
+        $(where).append(blackQueen);
+    }
+
+}
 //отметить выбранную фиругу
 function CheckRed (cell) {
     $(cell).addClass('checked');
@@ -130,7 +166,7 @@ function ClickChecked(cell) {
     $('.attack').toggleClass('attack'); //удаляем варианты атаки
 }
 
-//вынес подсветку ладьи и слона,
+//вынес подсветку логики ладьи и слона,
 //т.к. их логика используется еще и ферзем
 function RookMoveLogic(x,y,color){
     //подсветка предлагаемых ячеек ниже фигуры
@@ -495,8 +531,15 @@ function IsEmpty (cell) {
 //движение фигуры
 function Move (figure, where) {
     if ($(where).hasClass('navigate')) {
-        UncheckRed($(clFigure).parent()); //снимаем выделение
+        UncheckRed($(figure).parent()); //снимаем выделение
         $(where).append(figure); //передвигаем картинку
+
+        if ($(figure).attr('type') == 'pawn') {
+            PawnToQueen(where, figure);//
+        }
+
+
+
         return true; //успех
     } else {
         alert ('Can\'t move here!');
@@ -553,7 +596,8 @@ $(document).ready(function () {
                 Navigate(clFigureX,clFigureY,clFigureType,clFigureColor);
                 //checked = true; //флаг выбранной фигуры
 
-            } else if (whiteMove && clFigureColor != 'white') {
+            } else if (whiteMove && clFigureColor != 'white') { //если ход белых, а фигура черная
+                $('#information').toggleClass('alertInformation');
                 alert ('Error! It\'s white turn!');
             }
             else if (!whiteMove && clFigureColor == 'black') {
@@ -562,7 +606,8 @@ $(document).ready(function () {
                 Navigate(clFigureX,clFigureY,clFigureType,clFigureColor);
                 checked = true;
             }
-            else if (!whiteMove && clFigureColor == 'white') {
+            else if (!whiteMove && clFigureColor == 'white') { //если ход черных, а фигура белая
+                $('#information').toggleClass('alertInformation');
                 alert ('Error! It\'s black turn!');
             }
         }
@@ -585,6 +630,7 @@ $(document).ready(function () {
                 whiteMove = ToggleTurn(whiteMove); //переход хода
             }
         }
+
         if (whiteMove) {
             $('#information').text('White\'s move!');
         } else {

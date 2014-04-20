@@ -11,6 +11,11 @@
     font-size: 30;
 }
 
+.alertInformation {
+    font-size: 40;
+    color: red;
+}
+
 .box {
     width: 432px;
     height: 100px;
