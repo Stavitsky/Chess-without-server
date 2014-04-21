@@ -68,10 +68,10 @@ function Dotting () {
         for (var j = 1; j < 9; j++) {
             //пешки
             if (i == 2) {
-                //InsertFigure(i,j,whitePawn);
+                InsertFigure(i,j,whitePawn);
             }
             else if (i == 7) {
-                //InsertFigure (i,j,blackPawn);
+                InsertFigure (i,j,blackPawn);
             }
             //черные фигуры первого ряда
             else if (i == 1) {
