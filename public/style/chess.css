@@ -3,12 +3,19 @@
 	height: 432px;
     margin: 0 auto;
     border: solid 1px black;
+    display: inline-block;
 
+
+}
+
+#bigDiv {
+    display: inline-block;
 }
 
 #information {
     text-align: center;
     font-size: 30;
+    display: inline-block;
 }
 
 .alertInformation {

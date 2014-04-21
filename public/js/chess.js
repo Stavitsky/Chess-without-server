@@ -64,27 +64,6 @@ function Dotting () {
      king - король
      */
 
-/*
-    //пешки
-    var blackPawn = '<img color="white" type="pawn" src="'+pathToLight+' P.ico">';
-    var whitePawn = '<img color="black" type="pawn" src="'+pathToDark+' P.ico">';
-    //ладьи
-    var blackRook = '<img color="black" type="rook" src="' + pathToDark + ' R.ico">';
-    var whiteRook = '<img color="white" type="rook" src="' + pathToLight + ' R.ico">';
-    //кони
-    var blackKnight = '<img color="black" type="knight" src="' + pathToDark + ' N.ico">';
-    var whiteKnight = '<img color="white" type="knight" src="' + pathToLight + ' N.ico">';
-    //слоны
-    var blackBitshop = '<img color="black" type="bitshop" src="' + pathToDark + ' B.ico">';
-    var whiteBitshop = '<img color="white" type="bitshop" src="' + pathToLight + ' B.ico">';
-    //ферзи
-    var blackQueen = '<img color="black" type="queen" src="' + pathToDark + ' Q.ico">';
-    var whiteQueen = '<img color="white" type="queen" src="' + pathToLight + ' Q.ico">';
-    //короли
-    var blackKing = '<img color="black" type="king" src="' + pathToDark + ' K.ico">';
-    var whiteKing = '<img color="white" type="king" src="' + pathToLight + ' K.ico">';
-*/
-
     for (var i = 1; i < 9; i++) {
         for (var j = 1; j < 9; j++) {
             //пешки
@@ -277,21 +256,29 @@ function BitshopMoveLogic(x,y,color){
 
 }
 
+function Dots(x,y,i1, i2) {
+    return $('[x='+ (parseInt(x)+i1) + '][y='+(parseInt(y)+i2)+']');
+}
+
 //отрисовка логики ходов для фигур
 function Navigate (x,y,type,color) {
     //пешка
     if (type == 'pawn')  {
         if (color == 'white') {
-            var goalCell = $('[x='+ (parseInt(x)-1) +'][y='+ y +']'); //целевая ячейка белой пешки
-            var attackCell1 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y)+1) +']'); //правая под атакой белой
-            var attackCell2 = $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y)-1) +']'); //левая под атакой белой
+            var goalCell = Dots(x,y,-1,0);
+                //$('[x='+ (parseInt(x)-1) +'][y='+ y +']'); //целевая ячейка белой пешки
+            var attackCell1 = Dots(x,y,-1,1);
+                //= $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y)+1) +']'); //правая под атакой белой
+            var attackCell2 = Dots(x,y,-1,-1);
+                //= $('[x='+ (parseInt(x)-1) +'][y='+ (parseInt(y)-1) +']'); //левая под атакой белой
 
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
             }
 
             if (x == 7) { //если это первый шаг этой пешки
-                var goalCell_1 = $('[x='+ (parseInt(x)-2) +'][y='+ y +']'); //добавляем ей шаг на две клетки вперед
+                var goalCell_1 = Dots(x,y,-2,0);
+                    //$('[x='+ (parseInt(x)-2) +'][y='+ y +']'); //добавляем ей шаг на две клетки вперед
                 if (IsEmpty(goalCell_1)) {
                     goalCell_1.toggleClass('navigate'); //подсвечиваем его
                 }
@@ -308,16 +295,20 @@ function Navigate (x,y,type,color) {
 
         }
         else if (color == 'black') {
-            var goalCell = $('[x='+ (parseInt(x)+1) +'][y='+ y +']'); //целевая ячейка черной пешки
-            var attackCell1 = $('[x='+ (parseInt(x)+1) +'][y='+ (parseInt(y)+1) +']'); //правая под атакой черной
-            var attackCell2 = $('[x='+ (parseInt(x)+1) +'][y='+ (parseInt(y)-1) +']'); //левая под атакой черной
+            var goalCell = Dots(x,y,1,0);
+                //$('[x='+ (parseInt(x)+1) +'][y='+ y +']'); //целевая ячейка черной пешки
+            var attackCell1 = Dots(x,y,1,1);
+                //$('[x='+ (parseInt(x)+1) +'][y='+ (parseInt(y)+1) +']'); //правая под атакой черной
+            var attackCell2 = Dots(x,y,1,-1);
+                //$('[x='+ (parseInt(x)+1) +'][y='+ (parseInt(y)-1) +']'); //левая под атакой черной
 
             if (IsEmpty(goalCell)) {
                 goalCell.toggleClass('navigate');
             }
 
             if (x == 2) { //если это первый шаг этой пешки
-                var goalCell_1 = $('[x='+ (parseInt(x)+2) +'][y='+ y +']'); //добавляем ей шаг на две клетки вперед
+                var goalCell_1 = Dots(x,y,2,0);
+                    //$('[x='+ (parseInt(x)+2) +'][y='+ y +']'); //добавляем ей шаг на две клетки вперед
                 if (IsEmpty(goalCell_1)) {
                     goalCell_1.toggleClass('navigate'); //подсвечиваем его
                 }
@@ -433,7 +424,7 @@ function Navigate (x,y,type,color) {
     //король
     else if (type == 'king') {
 
-        var numberOfKingMoves = 0; //количество возможных ходов короля;
+        var numberOfKingMoves = 0; //количество возможных ходов короля - мб для мата пригодится;
 
         //все возможные шаги вокруг короля
         var goalCell1 = $('[x='+ (parseInt(x) +1) +'][y='+ (parseInt(y) +1) +']');
@@ -511,6 +502,8 @@ function Navigate (x,y,type,color) {
 
 
     }
+
+
 }
 
 //вставка фигуры в координаты
@@ -530,21 +523,20 @@ function IsEmpty (cell) {
 
 //движение фигуры
 function Move (figure, where) {
+    var figureType = $(figure).attr('type');
+    var xCord = $(where).attr('x');
     if ($(where).hasClass('navigate')) {
         UncheckRed($(figure).parent()); //снимаем выделение
         $(where).append(figure); //передвигаем картинку
-
-        if ($(figure).attr('type') == 'pawn') {
-            PawnToQueen(where, figure);//
+        if (figureType == 'pawn' && (xCord == 1 || xCord == 8)) {
+            PawnToQueen(where, figure);
         }
-
-
-
         return true; //успех
-    } else {
+    }
+    else {
         alert ('Can\'t move here!');
         return false;
-    }
+  }
 
 }
 
@@ -632,8 +624,10 @@ $(document).ready(function () {
         }
 
         if (whiteMove) {
+            $('#information').removeClass('alertInformation'); //удаляем выделение, если оно было
             $('#information').text('White\'s move!');
         } else {
+            $('#information').removeClass('alertInformation');
             $('#information').text('Black\'s move!');
         }
 	});
