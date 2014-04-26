@@ -116,13 +116,14 @@ function Dotting () {
 function PawnToQueen(where, figure){
     var figureColor = $(figure).attr('color');
     var xCord = $(where).attr('x');
+    var yCord = $(where).attr('y');
 
     if (figureColor == 'white' && xCord == 1) {
         $(figure).remove();
-        $(where).append(whiteQueen);
+        InsertFigure(xCord,yCord, whiteQueen);
     } else if (figureColor == 'black' && xCord == 8) {
         $(figure).remove();
-        $(where).append(blackQueen);
+        InsertFigure(xCord,yCord, blackQueen);
     }
 
 }
@@ -148,6 +149,25 @@ function ClickChecked(cell) {
 //метод для выборки квадратов для подсвечивания атакой или навигацией
 function Point(x,y,i1, i2) {
     return $('[x='+ (parseInt(x)+i1) + '][y='+(parseInt(y)+i2)+']');
+}
+
+//проверка на шах
+function IfShah (x,y,type,color) {
+    if (type == 'pawn') {
+        if (color == 'white') {
+            var attackCell1 = Point (x,y,-1,1);
+            var attackCell2 = Point (x,y,-1,-1);
+
+            if ($(attackCell1).children().attr('type') == 'king' && $(attackCell1).children().attr('color') != color || $(attackCell2).children().attr('type') == 'king' && $(attackCell2).children().attr('color') != color) {
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        }
+    }
+
 }
 
 //вынес подсветку логики ладьи и слона,
@@ -536,14 +556,21 @@ function IsEmpty (cell) {
 
 //движение фигуры
 function Move (figure, where) {
+
     var figureType = $(figure).attr('type');
     var xCord = $(where).attr('x');
+    var yCord = $(where).attr('y');
     if ($(where).hasClass('navigate')) {
         UncheckRed($(figure).parent()); //снимаем выделение
         $(where).append(figure); //передвигаем картинку
         if (figureType == 'pawn' && (xCord == 1 || xCord == 8)) {
             PawnToQueen(where, figure);
         }
+        //Navigate(xCord, yCord, $(clFigure).attr('type'), $(clFigure).attr('color'));
+        if (IfShah(xCord,yCord, $(clFigure).attr('type'), $(clFigure).attr('color'))) {
+            alert ('Shah to black king!');
+        }
+
         return true; //успех
     }
     else {
@@ -560,7 +587,7 @@ function Attack (attackedCell) {
         var attackedFigureColor = attackedFigure.attr('color'); //запоминаем ее цвет
         //удаляем класс "атакуемая" и добавляем класс "навигация"
         //для того, чтобы можно было в неё перейти после удаления фигуры
-        $(attackedCell).toggleClass('attack').toggleClass('navigate');
+        $(attackedCell).removeClass('attack').addClass('navigate');
 
         if (attackedFigureColor == 'black') { //если цвет был черный
             $('#boxForBlack').append(attackedFigure); //в отделение для захваченных черных
