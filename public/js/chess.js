@@ -158,15 +158,82 @@ function IsShah (x,y,type,color) {
             var attackCell1 = Point (x,y,-1,1);
             var attackCell2 = Point (x,y,-1,-1);
 
-            if ($(attackCell1).children().attr('type') == 'king' && $(attackCell1).children().attr('color') != color || $(attackCell2).children().attr('type') == 'king' && $(attackCell2).children().attr('color') != color) {
+            var attackCell1Type = $(attackCell1).children().attr('type'); //тип первой атакуемой фигуры
+            var attackCell2Type = $(attackCell2).children().attr('type'); //тип второй атакуемой фигуры
+
+            var attackCell1Color = $(attackCell1).children().attr('color'); //цвет1
+            var attackCell2Color = $(attackCell2).children().attr('color'); //цвет2
+
+
+            if (attackCell1Type == 'king' && attackCell1Color != color || attackCell2Type == 'king' && attackCell2Color != color) {
                 return true;
             }
             else {
                 return false;
             }
+        }
+        if (color == 'black') {
+            var attackCell1 = Point (x,y,1,1);
+            var attackCell2 = Point (x,y,1,-1);
 
+            var attackCell1Type = $(attackCell1).children().attr('type'); //тип первой атакуемой фигуры
+            var attackCell2Type = $(attackCell2).children().attr('type'); //тип второй атакуемой фигуры
+
+            var attackCell1Color = $(attackCell1).children().attr('color'); //цвет1
+            var attackCell2Color = $(attackCell2).children().attr('color'); //цвет2
+
+
+            if (attackCell1Type == 'king' && attackCell1Color != color
+                || attackCell2Type == 'king' && attackCell2Color != color) {
+                return true;
+            }
         }
     }
+    else if (type == 'knight') {
+        //выше коня
+        var attackCell1 = Point(x,y,-2,1);
+        var attackCell2 = Point(x,y,-2,-1);
+        var attackCell3 = Point(x,y,-1,-2);
+        var attackCell4 = Point(x,y,-1,2);
+        //ниже коня
+        var attackCell5 = Point(x,y,1,2);
+        var attackCell6 = Point(x,y,1,-2);
+        var attackCell7 = Point(x,y,2,1);
+        var attackCell8 = Point(x,y,2,-1);
+
+        var attackCell1Type = $(attackCell1).children().attr('type'); //тип первой атакуемой фигуры
+        var attackCell2Type = $(attackCell2).children().attr('type'); //тип второй атакуемой фигуры
+        var attackCell3Type = $(attackCell3).children().attr('type');
+        var attackCell4Type = $(attackCell4).children().attr('type');
+        var attackCell5Type = $(attackCell5).children().attr('type');
+        var attackCell6Type = $(attackCell6).children().attr('type');
+        var attackCell7Type = $(attackCell7).children().attr('type');
+        var attackCell8Type = $(attackCell8).children().attr('type');
+
+        var attackCell1Color = $(attackCell1).children().attr('color'); //цвет1
+        var attackCell2Color = $(attackCell2).children().attr('color'); //цвет2
+        var attackCell3Color = $(attackCell3).children().attr('color'); //цвет3
+        var attackCell4Color = $(attackCell4).children().attr('color'); //цвет4
+        var attackCell5Color = $(attackCell5).children().attr('color'); //цвет5
+        var attackCell6Color = $(attackCell6).children().attr('color'); //цвет6
+        var attackCell7Color = $(attackCell7).children().attr('color'); //цвет7
+        var attackCell8Color = $(attackCell8).children().attr('color'); //цвет8
+
+        if (attackCell1Type == 'king' && attackCell1Color != color
+        || attackCell2Type == 'king' && attackCell2Color != color
+        || attackCell3Type == 'king' && attackCell3Color != color
+        || attackCell4Type == 'king' && attackCell4Color != color
+        || attackCell5Type == 'king' && attackCell5Color != color
+        || attackCell6Type == 'king' && attackCell6Color != color
+        || attackCell7Type == 'king' && attackCell7Color != color
+        || attackCell8Type == 'king' && attackCell8Color != color) {
+            return true;
+        }
+
+
+
+    }
+    return false;
 
 }
 
@@ -566,9 +633,8 @@ function Move (figure, where) {
         if (figureType == 'pawn' && (xCord == 1 || xCord == 8)) {
             PawnToQueen(where, figure);
         }
-        //Navigate(xCord, yCord, $(clFigure).attr('type'), $(clFigure).attr('color'));
         if (IsShah(xCord,yCord, $(clFigure).attr('type'), $(clFigure).attr('color'))) {
-            alert ('Shah to black king!');
+            alert ('Shah!');
         }
 
         return true; //успех
