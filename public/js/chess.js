@@ -152,7 +152,7 @@ function Point(x,y,i1, i2) {
 }
 
 //проверка на шах
-function IfShah (x,y,type,color) {
+function IsShah (x,y,type,color) {
     if (type == 'pawn') {
         if (color == 'white') {
             var attackCell1 = Point (x,y,-1,1);
@@ -567,7 +567,7 @@ function Move (figure, where) {
             PawnToQueen(where, figure);
         }
         //Navigate(xCord, yCord, $(clFigure).attr('type'), $(clFigure).attr('color'));
-        if (IfShah(xCord,yCord, $(clFigure).attr('type'), $(clFigure).attr('color'))) {
+        if (IsShah(xCord,yCord, $(clFigure).attr('type'), $(clFigure).attr('color'))) {
             alert ('Shah to black king!');
         }
 
