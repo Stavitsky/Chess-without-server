@@ -151,6 +151,107 @@ function Point(x,y,i1, i2) {
     return $('[x='+ (parseInt(x)+i1) + '][y='+(parseInt(y)+i2)+']');
 }
 
+//вынес логику проверки на шах ладьи и слона в отдельные функции, чтобы не повторять код в логике ферзя
+function BitshopShahLogic(x,y,color){
+    //goalCell 1-4 - это четыре разных направления возможного движения слона
+    //не придумал, как можно реализовать одним циклом, поэтому 4
+
+    //юго-восток
+    for (var i = 1; i < 9; i++) {
+        var goalCell1 = Point(x,y,i,i);
+        if (!IsEmpty(goalCell1)) {
+            if (ShahCheck(goalCell1, color)) {
+                //alert('Shah!');
+                return true;
+            }
+            break;
+        }
+    }
+
+    //юго-запад
+    for (var i = 1; i < 9; i++) {
+        var goalCell2 = Point(x,y,i,-i);
+        if (!IsEmpty(goalCell2)) {
+            if (ShahCheck(goalCell2, color)) {
+                return true;
+            }
+            break;
+        }
+    }
+
+    //с-в
+    for (var i = 1; i < 9; i++) {
+        var goalCell3 = Point(x,y,-i,i)
+        if (!IsEmpty(goalCell3)) {
+            if (ShahCheck(goalCell3, color)) {
+                return true;
+            }
+            break;
+        }
+    }
+
+    //с-з
+    for (var i = 1; i < 9; i++) {
+        var goalCell4 = Point(x,y,-i,-i);
+        if (!IsEmpty(goalCell4)) {
+            if (ShahCheck(goalCell4, color)) {
+                return true;
+            }
+            break;
+        }
+    }
+
+}
+function RookShahLogic (x,y,color) {
+    //подсветка предлагаемых ячеек ниже фигуры
+    for (var i = x; i < 9; i++) {
+        var goalCell = Point(i,y,1,0);
+        if (!IsEmpty(goalCell)) {
+            if (ShahCheck(goalCell, color)) {
+                //alert('Shah!');
+                return true;
+            }
+            break;
+        }
+
+    }
+    //выше фигуры
+    for (var i = x; i > 0; i--) {
+        var goalCell = Point(i,y,-1,0);
+        if (!IsEmpty(goalCell)) {
+            if (ShahCheck(goalCell, color)) {
+                //alert('Shah!');
+                return true;
+            }
+            break;
+        }
+
+    }
+    //правее фигуры
+    for (var j = y; j < 9; j++) {
+        var goalCell = Point(x,j,0,1)
+        if (!IsEmpty(goalCell)) {
+            if (ShahCheck(goalCell, color)) {
+                //alert('Shah!');
+                return true;
+            }
+            break;
+        }
+    }
+    //левее фигуры
+    for (var j = y; j > 0; j--) {
+        var goalCell = Point(x,j,0,-1);
+        if (!IsEmpty(goalCell)) {
+            if (ShahCheck(goalCell, color)) {
+                //alert('Shah!');
+                return true;
+            }
+            break;
+        }
+    }
+
+}
+
 //проверка на шах
 function IsShah (x,y,type,color) {
     if (type == 'pawn') {
@@ -234,100 +335,19 @@ function IsShah (x,y,type,color) {
 
     }
     else if (type == 'rook') {
-        //подсветка предлагаемых ячеек ниже фигуры
-        for (var i = x; i < 9; i++) {
-            var goalCell = Point(i,y,1,0);
-            if (!IsEmpty(goalCell)) {
-                if (ShahCheck(goalCell, color)) {
-                    //alert('Shah!');
-                    return true;
-                }
-                break;
-            }
+        if (RookShahLogic(x,y,color)) {
+            return true;
+        }
 
-        }
-        //выше фигуры
-        for (var i = x; i > 0; i--) {
-            var goalCell = Point(i,y,-1,0);
-            if (!IsEmpty(goalCell)) {
-                if (ShahCheck(goalCell, color)) {
-                    //alert('Shah!');
-                    return true;
-                }
-                break;
-            }
-
-        }
-        //правее фигуры
-        for (var j = y; j < 9; j++) {
-            var goalCell = Point(x,j,0,1)
-            if (!IsEmpty(goalCell)) {
-                if (ShahCheck(goalCell, color)) {
-                    //alert('Shah!');
-                    return true;
-                }
-                break;
-            }
-        }
-        //левее фигуры
-        for (var j = y; j > 0; j--) {
-            var goalCell = Point(x,j,0,-1);
-            if (!IsEmpty(goalCell)) {
-                if (ShahCheck(goalCell, color)) {
-                    //alert('Shah!');
-                    return true;
-                }
-                break;
-            }
-        }
     }
     else if (type == 'bitshop') {
-        //goalCell 1-4 - это четыре разных направления возможного движения слона
-        //не придумал, как можно реализовать одним циклом, поэтому 4
-
-        //юго-восток
-        for (var i = 1; i < 9; i++) {
-            var goalCell1 = Point(x,y,i,i);
-            if (!IsEmpty(goalCell1)) {
-                if (ShahCheck(goalCell1, color)) {
-                    //alert('Shah!');
-                    return true;
-                }
-                break;
-            }
+        if (BitshopShahLogic(x,y,color)) {
+            return true;
         }
-
-        //юго-запад
-        for (var i = 1; i < 9; i++) {
-            var goalCell2 = Point(x,y,i,-i);
-            if (!IsEmpty(goalCell2)) {
-                if (ShahCheck(goalCell2, color)) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        //с-в
-        for (var i = 1; i < 9; i++) {
-            var goalCell3 = Point(x,y,-i,i)
-            if (!IsEmpty(goalCell3)) {
-                if (ShahCheck(goalCell3, color)) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        //с-з
-        for (var i = 1; i < 9; i++) {
-            var goalCell4 = Point(x,y,-i,-i);
-            if (!IsEmpty(goalCell4)) {
-                if (ShahCheck(goalCell4, color)) {
-                    return true;
-                }
-                break;
-            }
+    }
+    else if (type == 'queen') {
+        if (RookShahLogic(x,y,color) || BitshopShahLogic(x,y,color)) {
+            return true;
         }
     }
     return false;
