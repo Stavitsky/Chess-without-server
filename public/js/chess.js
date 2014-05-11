@@ -82,10 +82,10 @@ function Dotting () {
                     //InsertFigure(i,j,blackKnight);
                 }
                 else if (j == 3 || j == 6) {
-                    //InsertFigure (i, j, blackBitshop);
+                    InsertFigure (i, j, blackBitshop);
                 }
                 else if (j == 4) {
-                    //InsertFigure (i, j, blackQueen);
+                    InsertFigure (i, j, blackQueen);
                 }
                 else if (j == 5) {
                     InsertFigure(i,j,blackKing);
@@ -97,13 +97,13 @@ function Dotting () {
                     InsertFigure(i,j, whiteRook);
                 }
                 else if (j == 2 || j == 7) {
-                    //InsertFigure(i,j,whiteKnight);
+                    InsertFigure(i,j,whiteKnight);
                 }
                 else if (j == 3 || j == 6) {
-                    //InsertFigure (i, j, whiteBitshop);
+                    InsertFigure (i, j, whiteBitshop);
                 }
                 else if (j == 4) {
-                    //InsertFigure (i, j, whiteQueen);
+                    InsertFigure (i, j, whiteQueen);
                 }
                 else if (j == 5) {
                     InsertFigure(i,j,whiteKing);
