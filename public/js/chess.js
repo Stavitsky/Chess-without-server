@@ -79,13 +79,13 @@ function Dotting () {
                     InsertFigure(i,j, blackRook);
                 }
                 else if (j == 2 || j == 7) {
-                    InsertFigure(i,j,blackKnight);
+                    //InsertFigure(i,j,blackKnight);
                 }
                 else if (j == 3 || j == 6) {
-                    InsertFigure (i, j, blackBitshop);
+                    //InsertFigure (i, j, blackBitshop);
                 }
                 else if (j == 4) {
-                    InsertFigure (i, j, blackQueen);
+                    //InsertFigure (i, j, blackQueen);
                 }
                 else if (j == 5) {
                     InsertFigure(i,j,blackKing);
@@ -97,13 +97,13 @@ function Dotting () {
                     InsertFigure(i,j, whiteRook);
                 }
                 else if (j == 2 || j == 7) {
-                    InsertFigure(i,j,whiteKnight);
+                    //InsertFigure(i,j,whiteKnight);
                 }
                 else if (j == 3 || j == 6) {
-                    InsertFigure (i, j, whiteBitshop);
+                    //InsertFigure (i, j, whiteBitshop);
                 }
                 else if (j == 4) {
-                    InsertFigure (i, j, whiteQueen);
+                    //InsertFigure (i, j, whiteQueen);
                 }
                 else if (j == 5) {
                     InsertFigure(i,j,whiteKing);
@@ -144,7 +144,17 @@ function ClickChecked(cell) {
     UncheckRed(cell); //снимаем выделение с фигуры
     $('.navigate').toggleClass('navigate'); //удалем варианты ходов
     $('.attack').toggleClass('attack'); //удаляем варианты атаки
+    $('.castling').toggleClass('castling'); //удаляем варианты рокировок
 }
+//конец хода
+function EndTurn (whiteMove){
+    $('.navigate').toggleClass('navigate');
+    $('.attack').toggleClass('attack');
+    $('.castling').toggleClass('castling');
+    return whiteMove = ToggleTurn(whiteMove); //переход хода
+
+}
+
 
 //метод для выборки квадратов для подсвечивания атакой или навигацией
 function Point(x,y,i1, i2) {
@@ -672,6 +682,84 @@ function Navigate (x,y,type,color) {
         var goalCell8 = Point(x,y,0,1);
 
 
+        if (((x == 1 || x == 8) && y == 5)) {
+
+            //кол-во пустых ячеек правее королей (для короткой рокировки)
+            var emptyCellsRight;
+            var emptyCellsLeft;
+            var tmpEmptyCells = 0;
+            for (var i = 1; i < 3; i++) {
+                //var tmpEmptyCells = 0;
+                if (color == 'black'){
+                    var goalCell = Point (1,5,0,i);
+                    if (IsEmpty(goalCell)) {
+                        tmpEmptyCells++;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                else if (color == 'white') {
+                    var goalCell = Point (8,5,0,i);
+                    if (IsEmpty(goalCell)) {
+                        tmpEmptyCells++;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                emptyCellsRight = tmpEmptyCells;
+            }
+            tmpEmptyCells = 0;
+
+            for (var i = 1; i < 4; i++) {
+                if (color == 'black') {
+                    var goalCell = Point (1,5,0,-i);
+                    if (IsEmpty(goalCell)) {
+                        tmpEmptyCells++;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                else if (color == 'white') {
+                    var goalCell = Point (8,5,0,-i);
+                    if (IsEmpty(goalCell)) {
+                        tmpEmptyCells++;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                emptyCellsLeft = tmpEmptyCells;
+            }
+
+            if (emptyCellsRight == 2) {
+                if ((color == 'white') && (!IsEmpty(Point(8,5,0,3)))) {
+                    var goalCell = Point (8,5,0,2);
+                    goalCell.addClass('castling');
+                }
+                else if ((color == 'black') && (!IsEmpty(Point(1,5,0,3)))) {
+                    var goalCell = Point (1,5,0,2);
+                    goalCell.addClass('castling');
+                }
+            }
+
+            if (emptyCellsLeft == 3)  {
+                if ((color == 'white') && (!IsEmpty(Point(8,5,0,-4)))) {
+                    var goalCell = Point (8,5,0,-2);
+                    goalCell.addClass('castling');
+                }
+                else if ((color == 'black') && (!IsEmpty(Point(1,5,0,-4)))) {
+                    var goalCell = Point (1,5,0,-2);
+                    goalCell.addClass('castling');
+                }
+            }
+        }
+
+
+
+
         if (IsEmpty(goalCell1)) {
             goalCell1.toggleClass('navigate');
         }
@@ -750,8 +838,10 @@ function Navigate (x,y,type,color) {
 function Move (figure, where) {
 
     var figureType = $(figure).attr('type');
+    var figureColor = $(figure).attr('color');
     var xCord = $(where).attr('x');
     var yCord = $(where).attr('y');
+
     if ($(where).hasClass('navigate')) {
         UncheckRed($(figure).parent()); //снимаем выделение
         $(where).append(figure); //передвигаем картинку
@@ -761,8 +851,28 @@ function Move (figure, where) {
         if (IsShah(xCord,yCord, $(clFigure).attr('type'), $(clFigure).attr('color'))) {
             alert ('Shah!');
         }
-
         return true; //успех
+    }
+
+    else if ($(where).hasClass('castling')) { //если рокировка
+        if (figureColor == 'black') { //координата ладьи для ракировки в зависимости от цвета
+            var xRookCord = 1;
+        }
+        else {
+            var xRookCord = 8;
+        }
+        UncheckRed($(figure).parent()); //снимаем выделение
+        $(where).append(figure);
+        if (yCord == 7) { //короткая рокировка
+            var tmpRook = Point(xRookCord,8,0,0).children() [0];
+            InsertFigure(xRookCord,6,tmpRook);
+            return true;
+        }
+        else if (yCord == 3) { //длинная рокировка
+            var tmpRook = Point(xRookCord,1,0,0).children() [0];
+            InsertFigure(xRookCord,4,tmpRook);
+            return true;
+        }
     }
     else {
         alert ('Can\'t move here!');
@@ -840,16 +950,14 @@ $(document).ready(function () {
         else if (checked && IsEmpty(this)) { //фигура выбрала, клик в пустую ячейку
 
             if (Move(clFigure, this)) { //если ход можно совершить
-                $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
-                whiteMove = ToggleTurn(whiteMove); //переход хода
+                whiteMove = EndTurn(whiteMove);
             }
 
         }
         else if (checked && !IsEmpty(this)) {
             Attack(this);
             if (Move(clFigure,this)) {
-                $('.navigate').toggleClass('navigate'); //выключаем зеленые квадратики
-                whiteMove = ToggleTurn(whiteMove); //переход хода
+                whiteMove = EndTurn(whiteMove);
             }
         }
 
