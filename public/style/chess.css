@@ -12,6 +12,7 @@
 }
 
 .alertInformation {
+    -webkit-transition: color 3s;-moz-transition: color 3s;-ms-transition: color 3s;-o-transition: color 3s;transition: color 3s;
     font-size: 40;
     color: red;
 }

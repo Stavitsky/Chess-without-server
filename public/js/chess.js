@@ -50,6 +50,15 @@ function CreateBoard (boardHeight, boardWidth) {
 	}
 }
 
+function ClearBoard() {
+    for (var x = 1; x < 9; x++) {
+        for (var y = 1; y < 9; y++) {
+            Point (x,y,0,0).children().hide();
+            Point (x,y,0,0).removeClass('attack').removeClass('navigate').removeClass('castling');
+        }
+    }
+}
+
 //расстановка фигур
 function Dotting () {
 
@@ -79,7 +88,7 @@ function Dotting () {
                     InsertFigure(i,j, blackRook);
                 }
                 else if (j == 2 || j == 7) {
-                    //InsertFigure(i,j,blackKnight);
+                    InsertFigure(i,j,blackKnight);
                 }
                 else if (j == 3 || j == 6) {
                     InsertFigure (i, j, blackBitshop);
@@ -735,22 +744,22 @@ function Navigate (x,y,type,color) {
             }
 
             if (emptyCellsRight == 2) {
-                if ((color == 'white') && (!IsEmpty(Point(8,5,0,3)))) {
+                if ((color == 'white') && ((Point(8,5,0,3)).children().attr('type') == 'rook') && (Point(8,5,0,3)).children().attr('color') == color) { //на смещении стоит ладья нужного цвета
                     var goalCell = Point (8,5,0,2);
                     goalCell.addClass('castling');
                 }
-                else if ((color == 'black') && (!IsEmpty(Point(1,5,0,3)))) {
+                else if ((color == 'black') && ((Point(1,5,0,3)).children().attr('type') == 'rook') && (Point(1,5,0,3)).children().attr('color') == color) {
                     var goalCell = Point (1,5,0,2);
                     goalCell.addClass('castling');
                 }
             }
 
             if (emptyCellsLeft == 3)  {
-                if ((color == 'white') && (!IsEmpty(Point(8,5,0,-4)))) {
+                if ((color == 'white') && ((Point(8,5,0,-4)).children().attr('type') == 'rook') && (Point(8,5,0,-4)).children().attr('color') == color) {
                     var goalCell = Point (8,5,0,-2);
                     goalCell.addClass('castling');
                 }
-                else if ((color == 'black') && (!IsEmpty(Point(1,5,0,-4)))) {
+                else if ((color == 'black') && ((Point(1,5,0,-4)).children().attr('type') == 'rook') && (Point(1,5,0,-4)).children().attr('color') == color) {
                     var goalCell = Point (1,5,0,-2);
                     goalCell.addClass('castling');
                 }
@@ -885,6 +894,16 @@ function Attack (attackedCell) {
     if ($(attackedCell).hasClass('attack')) { //если выбранная ячейка имеет класс атакуемой
         var attackedFigure = $(attackedCell).children(); //запоминаем атакованную фигуру
         var attackedFigureColor = attackedFigure.attr('color'); //запоминаем ее цвет
+
+        if (attackedFigure.attr('type') == 'king') {
+            ClearBoard();
+            if (confirm(attackedFigureColor + ' lose! Do you want to play again?')) { //хотите сыграть еще?
+                window.location.reload();
+            }
+            else {
+                window.close();
+            }
+        }
         //удаляем класс "атакуемая" и добавляем класс "навигация"
         //для того, чтобы можно было в неё перейти после удаления фигуры
         $(attackedCell).removeClass('attack').addClass('navigate');
@@ -894,6 +913,8 @@ function Attack (attackedCell) {
         } else {
             $('#boxForWhite').append(attackedFigure); //для белых
         }
+
+
     } else {
         alert('Can\'t attack!');
     }
@@ -930,7 +951,7 @@ $(document).ready(function () {
 
             } else if (whiteMove && clFigureColor != 'white') { //если ход белых, а фигура черная
                 $('#information').toggleClass('alertInformation');
-                alert ('Error! It\'s white turn!');
+                //alert ('Error! It\'s white turn!');
             }
             else if (!whiteMove && clFigureColor == 'black') {
                 CheckRed(this); //выделяем ячейку
@@ -940,7 +961,7 @@ $(document).ready(function () {
             }
             else if (!whiteMove && clFigureColor == 'white') { //если ход черных, а фигура белая
                 $('#information').toggleClass('alertInformation');
-                alert ('Error! It\'s black turn!');
+                //alert ('Error! It\'s black turn!');
             }
         }
         else if (checked && $(this).hasClass('checked')) {//клик по уже выбранной фигуре
@@ -962,10 +983,10 @@ $(document).ready(function () {
         }
 
         if (whiteMove) {
-            $('#information').removeClass('alertInformation'); //удаляем выделение, если оно было
+            //$('#information').removeClass('alertInformation'); //удаляем выделение, если оно было
             $('#information').text('White\'s move!');
         } else {
-            $('#information').removeClass('alertInformation');
+            //$('#information').removeClass('alertInformation');
             $('#information').text('Black\'s move!');
         }
 	});
